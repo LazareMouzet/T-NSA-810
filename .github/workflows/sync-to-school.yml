@@ -1,0 +1,26 @@
+name: Sync to School Repo
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SCHOOL_REPO_SSH_KEY }}" > ~/.ssh/school_key
+          chmod 600 ~/.ssh/school_key
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      
+      - name: Push to school repo
+        run: |
+          git remote add school git@github.com:EpitechMscProPromo2027/T-NSA-810-NAN_5.git
+          GIT_SSH_COMMAND="ssh -i ~/.ssh/school_key" git push school main --force
