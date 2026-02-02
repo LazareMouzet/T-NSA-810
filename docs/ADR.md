@@ -13,7 +13,52 @@ Dans un contexte de nombre de VM limité, nous ne pouvons pas dédier une VM à 
 
 ## Décision
 
-La décision prise est d'utiliser Unbound comme DNS forwarder, qui sera intégré à pfSense. Cela permet de gagner une VM.
+La décision prise est d'utiliser un DNS Forwarder pris en charge par PFsense
+
+## Options à considérer pour le choix de la stack technologique
+
+### Option 1 : Unbound
+**Description:** 
+
+**Avantages:**
+- 
+- 
+
+**Inconvénients:**
+- 
+- 
+
+### Option 2 : dnsmasq
+**Description:** 
+
+**Avantages:**
+- 
+- 
+
+**Inconvénients:**
+- 
+- 
+
+### Option 3 : BIND
+**Description:** 
+
+**Avantages:**
+- 
+- 
+
+**Inconvénients:**
+- 
+- 
+### Option 3 : dnsdist
+**Description:** 
+
+**Avantages:**
+- 
+- 
+
+**Inconvénients:**
+- 
+- 
 
 
 # ADR - Choix du contexte et des rôles des sites
