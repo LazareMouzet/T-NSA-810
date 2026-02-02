@@ -28,7 +28,7 @@
 - [Documentation & livrables](#documentation--livrables)
 - [Contribution](#contribution)
 - [Auteurs](#auteurs)
-- [License](#license)
+- [Licence](#license)
 
 ---
 
