@@ -13,7 +13,8 @@ Dans un contexte de nombre de VM limité, nous ne pouvons pas dédier une VM à 
 
 ## Décision
 
-La décision prise est d'utiliser un DNS Forwarder pris en charge par PFsense
+La décision prise est d'utiliser un DNS Forwarder pris en charge par PFsense.
+Reste à définir le choix technique
 
 ## Options à considérer pour le choix de la stack technologique
 
@@ -59,7 +60,6 @@ La décision prise est d'utiliser un DNS Forwarder pris en charge par PFsense
 **Inconvénients:**
 - 
 - 
-
 
 # ADR - Choix du contexte et des rôles des sites
 
