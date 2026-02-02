@@ -302,9 +302,9 @@ A REVOIR
 # Dans pfSense > VPN > OpenVPN > Servers
 # Mode : Peer to Peer (SSL/TLS)
 # Protocol : UDP sur port 1194
-# Tunnel Network : 10.255.0.0/24
-# Local Network : 10.1.0.0/16
-# Remote Network : 10.2.0.0/16
+# Tunnel Network : 10.8.0.0/24
+# Local Network : 192.168.1.0/24
+# Remote Network : 192.168.2.0/24
 ```
 
 #### 3.2 Configuration OpenVPN sur Site 2 (client)
