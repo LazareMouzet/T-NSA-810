@@ -286,8 +286,8 @@ A REVOIR
 
 # Configuration de base :
 # - Interface WAN (DHCP ou IP fixe)
-# - Interface LAN (ex: 10.1.1.1/24)
-# - Interface DMZ (ex: 10.1.10.1/24)
+# - Interface LAN (ex: 192.168.1.1/24)
+# - Interface DMZ (ex: 192.168.10.1/24)
 ```
 
 #### 2.2 Création des VLANs et règles de filtrage
