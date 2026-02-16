@@ -1,0 +1,46 @@
+name: Code Quality & Linting
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+
+jobs:
+  lint:
+    name: Execute Linters
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 1. YAML Lint - Vérifie la syntaxe de tous les fichiers .yml
+      - name: YAML Lint
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: "."
+          config_data: "{extends: default, rules: {line-length: disable}}"
+
+      # 2. Ansible Lint - Pour vos scripts de déploiement
+      - name: Ansible Lint
+        uses: ansible/ansible-lint@main
+        with:
+          path: "scripts/"
+
+      # 3. Action Lint - Vérifie que vos workflows GitHub ne contiennent pas d'erreurs
+      - name: GitHub Action Lint
+        uses: actionlint/actionlint@v1
+
+      # 4. Terraform Lint - Valide vos fichiers IaC
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v3
+      - name: Run TFLint
+        run: tflint -r
+
+      # 5. Markdown Lint - Assure la qualité de la documentation
+      - name: Markdown Lint
+        uses: gaurav-nelson/github-action-markdown-cli@v1
+        with:
+          files: "docs/**/*.md, *.md"
+          config_file: ".markdownlint.json"
+          ignore_files: "node_modules"
