@@ -26,7 +26,7 @@
 - [Roadmap](#roadmap)
 - [Limites connues](#limites-connues)
 - [Documentation & livrables](#documentation--livrables)
-- [Contribution](#contribution)
+- [Contribution](./docs/contributing.md)
 - [Auteurs](#auteurs)
 - [Licence](#license)
 
@@ -416,39 +416,6 @@ Ces limites sont **assumées et documentées**.
 - 📄 Rapport technique complet
 - 🎤 Support de soutenance
 - 💾 Fichiers de configuration (anonymisés)
-
----
-
-## 🤝 Contribution
-
-Ce projet est réalisé dans un cadre pédagogique. Les contributions sont limitées aux membres de l'équipe projet.
-
-### Pour l'équipe
-
-#### Guidelines de contribution
-1. Créer une branche pour chaque fonctionnalité : `git checkout -b feature/nom-fonctionnalite`
-2. Commiter régulièrement avec des messages explicites
-3. Documenter toute modification d'architecture
-4. Tester avant de merger dans `main`
-
-#### Workflow Git
-```bash
-# Cloner le repository
-git clone <repository-url>
-cd T-NSA-810
-
-# Créer une branche
-git checkout -b feature/ma-fonctionnalite
-
-# Faire vos modifications
-git add .
-git commit -m "Description claire de la modification"
-
-# Pousser la branche
-git push origin feature/ma-fonctionnalite
-
-# Créer une Pull Request pour review
-```
 
 ---
 
