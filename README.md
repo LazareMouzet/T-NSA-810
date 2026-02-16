@@ -70,7 +70,7 @@ Ce projet déploie une infrastructure hybride sécurisée composée de :
 
 A REVOIR
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                         INTERNET                                     │
 └────────────┬───────────────────────────────────────┬─────────────────┘
@@ -260,7 +260,7 @@ Il peut être ajouté facilement à cette infrastructure
 
 A REVOIR
 
-```
+```text
 T-NSA-810/
 ├── README.md                    # Ce fichier
 ├── docs/                        # Documentation technique
@@ -469,7 +469,7 @@ Ces limites sont **assumées et documentées**.
 
 ## 👥 Auteurs
 
-**Équipe T-NSA-810**
+### Équipe T-NSA-810
 
 - Étudiant(s) en Master/Ingénierie Systèmes et Réseaux
 - Établissement : Epitech
