@@ -1,0 +1,40 @@
+---
+name: Code Quality & Linting
+
+"on":
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+
+jobs:
+  lint:
+    name: Execute Linters
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 1. YAML Lint
+      - name: YAML Lint
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: "."
+          config_data: "{extends: default, rules: {line-length: disable}}"
+
+      # 2. Ansible Lint
+      - name: Ansible Lint
+        uses: ansible/ansible-lint@main
+        with:
+          path: "scripts/"
+
+      # 3. Action Lint
+      - name: GitHub Action Lint
+        uses: reviewdog/action-actionlint@v1
+
+      # 4. Markdown Lint
+      - name: Markdown Lint
+        uses: nosborn/github-action-markdown-cli@v3.3.0
+        with:
+          files: "."
+          config_file: ".markdownlint.json"
