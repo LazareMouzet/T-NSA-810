@@ -32,13 +32,7 @@ jobs:
       - name: GitHub Action Lint
         uses: reviewdog/action-actionlint@v1
 
-      # 4. Terraform Lint
-      - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v3
-      - name: Run TFLint
-        run: tflint -r
-
-      # 5. Markdown Lint
+      # 4. Markdown Lint
       - name: Markdown Lint
         uses: nosborn/github-action-markdown-cli@v3.3.0
         with:

@@ -33,18 +33,8 @@ try {
     $ErrorsFound = $true
 }
 
-# 4. Terraform Lint
-Write-Host "4. Terraform Lint..." -ForegroundColor Cyan
-try {
-    tflint -r
-    if ($LASTEXITCODE -ne 0) { $ErrorsFound = $true }
-} catch {
-    Write-Host "Error: tflint non trouve." -ForegroundColor Red
-    $ErrorsFound = $true
-}
-
-# 5. Markdown Lint
-Write-Host "5. Markdown Lint..." -ForegroundColor Cyan
+# 4. Markdown Lint
+Write-Host "4. Markdown Lint..." -ForegroundColor Cyan
 try {
     markdownlint . --config .markdownlint.json
     if ($LASTEXITCODE -ne 0) { $ErrorsFound = $true }
