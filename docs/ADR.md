@@ -1,6 +1,7 @@
 # ADR - Choix du DNS forwarder
 
 ## Statut
+
 Accepté
 
 **Date:** 02/02/2026
@@ -19,51 +20,65 @@ Reste à définir le choix technique
 ## Options à considérer pour le choix de la stack technologique
 
 ### Option 1 : Unbound
-**Description:** 
+
+**Description:**
 
 **Avantages:**
-- 
-- 
+-
+
+-
 
 **Inconvénients:**
-- 
-- 
+-
+
+-
 
 ### Option 2 : dnsmasq
-**Description:** 
+
+**Description:**
 
 **Avantages:**
-- 
-- 
+-
+
+-
 
 **Inconvénients:**
-- 
-- 
+-
+
+-
 
 ### Option 3 : BIND
-**Description:** 
+
+**Description:**
 
 **Avantages:**
-- 
-- 
+-
+
+-
 
 **Inconvénients:**
-- 
-- 
+-
+
+-
+
 ### Option 3 : dnsdist
-**Description:** 
+
+**Description:**
 
 **Avantages:**
-- 
-- 
+-
+
+-
 
 **Inconvénients:**
-- 
-- 
+-
+
+-
 
 # ADR - Choix du contexte et des rôles des sites
 
 ## Statut
+
 Accepté
 
 **Date:** 02/02/2026
@@ -81,6 +96,7 @@ La décision prise est d'attribuer le rôle de datacenter au site on-premise et 
 # ADR - Choix de la méthode pour mettre à jour les services
 
 ## Statut
+
 Accepté
 
 **Date:** 02/02/2026
@@ -100,51 +116,63 @@ Cette décision est un point intéressant à avoir dans la documentation, mais s
 ## Options considérées
 
 ### Option 1 : [Nom de l'option]
+
 **Description:** [Description brève]
 
 **Avantages:**
-- 
-- 
+-
+
+-
 
 **Inconvénients:**
-- 
-- 
+-
+
+-
 
 ### Option 2 : [Nom de l'option]
+
 **Description:** [Description brève]
 
 **Avantages:**
-- 
-- 
+-
+
+-
 
 **Inconvénients:**
-- 
-- 
+-
+
+-
 
 ### Option 3 : [Nom de l'option] (si applicable)
+
 **Description:** [Description brève]
 
 **Avantages:**
-- 
-- 
+-
+
+-
 
 **Inconvénients:**
-- 
-- 
+-
+
+-
 
 ## Conséquences
 
 ### Positives
-- 
-- 
+
+-
+-
 
 ### Négatives
-- 
-- 
+
+-
+-
 
 ### Risques
-- 
-- 
+
+-
+-
 
 ## Notes complémentaires
 

@@ -6,6 +6,7 @@ To maintain a clean, navigable, and professional codebase, all contributors are 
 ---
 
 ## 1. Branch Naming Convention
+
 We use a **prefix-based** naming system. All branch names should be lowercase, use hyphens as separators, and include the associated ticket number.
 
 **Format:** `category/ticket-id-short-description`
@@ -21,12 +22,14 @@ We use a **prefix-based** naming system. All branch names should be lowercase, u
 ---
 
 ## 2. Commit Message Formatting
+
 We follow the **Conventional Commits** specification. This allows for automated changelog generation and easier history searching.
 
 **Structure:**
 `<type>(<scope>): <ticket-id> short summary in present tense`
 
-### Allowed Types:
+### Allowed Types
+
 * `feat`: A new feature.
 * `fix`: A bug fix.
 * `docs`: Documentation only changes.
@@ -37,6 +40,7 @@ We follow the **Conventional Commits** specification. This allows for automated 
 * `chore`: Changes to the build process or auxiliary tools/libraries.
 
 **Examples:**
+
 * `feat(auth): PROJ-123 add JWT validation logic`
 * `fix(ui): PROJ-456 resolve z-index issue on modal`
 * `docs: update installation steps in README`
@@ -44,6 +48,7 @@ We follow the **Conventional Commits** specification. This allows for automated 
 ---
 
 ## 3. Ticket Referencing
+
 Every non-trivial commit **must** reference a ticket number (e.g., Jira, Linear, or GitHub Issue).
 
 * **Primary Reference:** Include the ticket ID in the first line (header) of the commit.
@@ -52,6 +57,7 @@ Every non-trivial commit **must** reference a ticket number (e.g., Jira, Linear,
 ---
 
 ## 4. Folder and File Naming
+
 Consistency in the file system prevents "import confusion" and keeps the project searchable.
 
 * **Directories:** Use `kebab-case` (e.g., `src/user-profile/`).
@@ -62,8 +68,9 @@ Consistency in the file system prevents "import confusion" and keeps the project
 ---
 
 ## 5. The Pull Request Process
-1.  **Sync:** Ensure your local `main` branch is up to date before branching.
-2.  **Branch:** Create a branch following the naming rules above.
-3.  **Commit:** Write clean, atomic commits with clear messages.
-4.  **Draft:** Open a PR as a "Draft" if you want early feedback or are still working.
-5.  **Review:** Tag at least two maintainer for review before merging.
+
+1. **Sync:** Ensure your local `main` branch is up to date before branching.
+2. **Branch:** Create a branch following the naming rules above.
+3. **Commit:** Write clean, atomic commits with clear messages.
+4. **Draft:** Open a PR as a "Draft" if you want early feedback or are still working.
+5. **Review:** Tag at least two maintainer for review before merging.
