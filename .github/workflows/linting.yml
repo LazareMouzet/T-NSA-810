@@ -14,33 +14,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 1. YAML Lint - Vérifie la syntaxe de tous les fichiers .yml
+      # 1. YAML Lint
       - name: YAML Lint
         uses: ibiqlik/action-yamllint@v3
         with:
           file_or_dir: "."
           config_data: "{extends: default, rules: {line-length: disable}}"
 
-      # 2. Ansible Lint - Pour vos scripts de déploiement
+      # 2. Ansible Lint
       - name: Ansible Lint
         uses: ansible/ansible-lint@main
         with:
           path: "scripts/"
 
-      # 3. Action Lint - Vérifie que vos workflows GitHub ne contiennent pas d'erreurs
+      # 3. Action Lint
       - name: GitHub Action Lint
         uses: actionlint/actionlint@v1
 
-      # 4. Terraform Lint - Valide vos fichiers IaC
+      # 4. Terraform Lint
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v3
       - name: Run TFLint
         run: tflint -r
 
-      # 5. Markdown Lint - Assure la qualité de la documentation
+      # 5. Markdown Lint
       - name: Markdown Lint
         uses: gaurav-nelson/github-action-markdown-cli@v1
         with:
           files: "docs/**/*.md, *.md"
           config_file: ".markdownlint.json"
-          ignore_files: "node_modules"
