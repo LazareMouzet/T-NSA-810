@@ -8,7 +8,7 @@ This roadmap is exported in the following Gantt : [See gantt.md](gantt.md)
 > This Gantt has been generated with the tool
 > [ndesgranges/gantt-exporter](https://github.com/ndesgranges/gantt-exporter)
 > Using the following command :
-> ```
+> ```powershell
 >   $env:GITHUB_TOKEN="<my_token>"
 >   python tools/gantt-exporter/export_gantt_tnsa.py \
 >       --login LazareMouzet --project 4 \
