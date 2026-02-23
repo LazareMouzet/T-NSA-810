@@ -9,6 +9,11 @@
 > Projet pédagogique de conception et déploiement d'une infrastructure réseau sécurisée, segmentée et observable sur deux sites interconnectés.
 
 ---
+## Table of content
+
+- [Project Management](docs/project_management/project_management.md)
+    - [Gantt](docs/project_management/gantt.md)
+---
 
 ## 📋 Table des matières
 
