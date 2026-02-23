@@ -75,9 +75,7 @@ Ce site est conçu selon des principes de sécurité renforcés, notamment via u
 
 ### 2.2 Principe de segmentation réseau
 
-
 ### 2.3 Rôle du VPN site-to-site
-
 
 ---
 
@@ -94,7 +92,6 @@ Proxmox VE est une plateforme de virtualisation open-source basée sur KVM et LX
 * Intégration native avec des réseaux complexes (VLAN, bridges).
 * Compatible avec une approche Infrastructure as a Service (IaaS).
 
-
 * **Valeur apportée au projet :**
 Proxmox permet de simuler une infrastructure d’entreprise réaliste, tout en respectant la contrainte de ressources (3 VM max par site), et sert de socle à l’ensemble de l’architecture Cloud privée.
 
@@ -108,7 +105,6 @@ pfSense est une solution de pare-feu open-source reconnue, utilisée en producti
 * Gestion avancée des VPN, NAT et règles de sécurité.
 * Interface claire facilitant l’audit et la traçabilité.
 * Approche *deny-by-default* conforme aux bonnes pratiques sécurité.
-
 
 * **Valeur apportée au projet :**
 pfSense joue un rôle central dans la segmentation réseau, le contrôle des flux inter-sites et la protection des ressources critiques, garantissant un haut niveau de sécurité.
@@ -124,7 +120,6 @@ OpenVPN est une solution VPN éprouvée, robuste et largement adoptée.
 * Authentification par certificats, limitant les risques d’intrusion.
 * Surveillance et logs des connexions.
 
-
 * **Valeur apportée au projet :**
 OpenVPN permet d’établir un canal sécurisé entre le site on-premise et le site remote, assurant la confidentialité et l’intégrité des échanges, tout en considérant le VPN comme un réseau non fiable filtré par le firewall.
 
@@ -139,7 +134,6 @@ NetBox est un outil open-source de référence pour la gestion de l’adressage 
 * Vision claire de l’architecture réseau.
 * Facilite la maintenance et l’évolution de l’infrastructure.
 
-
 * **Valeur apportée au projet :**
 NetBox apporte une traçabilité et une documentation structurée du réseau, indispensable dans un contexte multi-sites et orienté sécurité.
 
@@ -153,7 +147,6 @@ ElasticSearch est une solution de collecte et d’analyse de logs utilisée à g
 * Détection d’anomalies et d’incidents.
 * Amélioration de la visibilité sur l’infrastructure.
 * Support des audits et investigations post-incident.
-
 
 * **Valeur apportée au projet :**
 ElasticSearch permet une surveillance centralisée, essentielle pour détecter des comportements suspects, analyser les incidents de sécurité et démontrer une approche proactive de la cybersécurité.
@@ -170,7 +163,6 @@ Terraform est un outil d’Infrastructure as Code (IaC) permettant de définir, 
 * S’intègre dans une démarche DevOps / Cloud moderne, proche des standards industriels.
 * Permet un versionning de l’infrastructure via un système de contrôle de versions (Git).
 
-
 * **Valeur apportée au projet :**
 Terraform apporte une approche structurée, automatisée et documentée du déploiement de l’infrastructure. Il renforce la cohérence entre les environnements, améliore la traçabilité des changements et prépare l’architecture à une évolution future vers des pratiques DevOps et Cloud à plus grande échelle.
 
@@ -179,7 +171,6 @@ Terraform apporte une approche structurée, automatisée et documentée du dépl
 ## 4. Architecture réseau détaillée
 
 ### 4.1 Description des réseaux
-
 
 ### 4.2 Plan d’adressage
 
@@ -232,13 +223,10 @@ Le plan d’adressage respecte les principes suivants :
 
 ## 5. Sécurité et contrôle d’accès
 
-
 ## 6. Supervisions, logs et traçabilité
-
 
 ## 7. Déploiement et exploitation
 
 ## 8. Tests validation et scénario
-
 
 ## 9. Conclusion
