@@ -10,7 +10,7 @@ This roadmap is exported in the following Gantt : [See gantt.md](gantt.md)
 > Using the following command :
 > ```
 >   $env:GITHUB_TOKEN="<my_token>"
->   python tools/gantt-exporter/export_gantt.py \
+>   python tools/gantt-exporter/export_gantt_tnsa.py \
 >       --login LazareMouzet --project 4 \
 >       --repo LazareMouzet/T-NSA-810 \
 >       --include-undated  > docs/project_management/gantt.md
