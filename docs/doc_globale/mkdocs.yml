@@ -1,0 +1,19 @@
+site_name: Documentation Projet CIA
+theme:
+  name: readthedocs
+markdown_extensions:
+  - toc:
+      toc_depth: 6
+nav:
+  - Accueil: index.md
+  - Introduction et contexte: introduction.md
+  - Architecture Globale: architecture-globale.md
+  - Justification des choix technologiques: choix-technologiques.md
+  - Architecture réseau détaillé: architecture-reseau.md
+  - Sécurité et contrôle d'accès: securite.md
+  - Règles firewall et flux autorisés: firewall.md
+  - Supervision, logs et traçabilité: supervision.md
+  - Déploiement et exploitation: deploiement.md
+  - Tests de validation et scénario: tests.md
+  - Limites, risques et amélioration: limites.md
+  - Conclusion: conclusion.md
