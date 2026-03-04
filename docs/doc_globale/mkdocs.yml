@@ -1,4 +1,5 @@
 site_name: Documentation Projet CIA
+site_url: https://lazaremouzet.github.io/T-NSA-810/
 theme:
   name: readthedocs
 markdown_extensions:
