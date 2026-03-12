@@ -2,6 +2,7 @@
 
 TOKEN_API_NETBOX=""
 NETBOX_BASE_URL=""
+NETBOX_CACERT=""  # Chemin vers un certificat CA personnalisé (optionnel)
 ip_regex='^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\/([0-9]|[12][0-9]|3[0-2]))?$'
 NETBOX_DATA=""
 allIps=""
@@ -11,6 +12,17 @@ statusToHydrate=""
 isIpExist=""
 ipSelect=""
 statusToIp=""
+
+## PRECHECK ##
+if [[ -z "$TOKEN_API_NETBOX" || -z "$NETBOX_BASE_URL" ]]; then
+    echo "Erreur: TOKEN_API_NETBOX ou NETBOX_BASE_URL non défini"
+    exit 1
+fi
+
+command -v jq >/dev/null 2>&1 || {
+    echo "Erreur: jq est requis mais non installé"
+    exit 1
+}
 
 showError(){
     local code=$1
@@ -37,31 +49,43 @@ fetchAndApplyRequestApi() {
         return 1
     fi
 
+    local curl_opts=(-s --fail -w "%{http_code}" --connect-timeout 10 --max-time 30 --tlsv1.2)
+    if [[ -n "$NETBOX_CACERT" ]]; then
+        curl_opts+=(--cacert "$NETBOX_CACERT")
+    fi
+
     local response
     local http_code
+    local curl_exit
 
     case "$verbHttp" in
         GET|DELETE)
-            response=$(curl -s -w "%{http_code}" \
+            response=$(curl "${curl_opts[@]}" \
                 -X "$verbHttp" \
                 -H "Authorization: Token $TOKEN_API_NETBOX" \
                 -H "Content-Type: application/json" \
                 "$url")
-
+            curl_exit=$?
             ;;
         POST|PATCH)
-            response=$(curl -s -w "%{http_code}" \
+            response=$(curl "${curl_opts[@]}" \
                 -X "$verbHttp" \
                 -H "Authorization: Token $TOKEN_API_NETBOX" \
                 -H "Content-Type: application/json" \
                 "$url" \
                 -d "$objectData")
+            curl_exit=$?
             ;;
         *)
             showError 40 "fetchAndApplyRequestApi"
             return 1
             ;;
     esac
+
+    if [[ $curl_exit -ne 0 ]]; then
+        echo "Erreur réseau/TLS (curl exit $curl_exit) - vérifiez la connectivité et le certificat TLS" >&2
+        return 1
+    fi
 
     http_code="${response: -3}"
     NETBOX_DATA="${response::-3}"
@@ -77,7 +101,8 @@ fetchAndApplyRequestApi() {
 checkIpExist(){
     local ip=$1
     if [[ -n "$allIps" && -n "$ip" ]]; then
-        local getIp="$(echo "$allIps" | grep "$ip" | cut -d ' ' -f 2)"
+        local getIp
+        getIp="$(echo "$allIps" | awk -v ip="$ip" '$2 == ip {print $2}')"
         if [[ -n "$getIp" ]]; then
             isIpExist="true"
         else
@@ -91,7 +116,7 @@ checkIpExist(){
 getStatusToIp(){
     local ip=$1
     if [[ -n "$allIps" && -n "$ip" ]]; then
-        statusToIp="$(echo "$allIps" | grep "$ip" | cut -d ' ' -f 3)"
+        statusToIp="$(echo "$allIps" | awk -v ip="$ip" '$2 == ip {print $3}')"
     else
         showError 10 "getIdToIp"
     fi
@@ -108,10 +133,10 @@ switchCaseStatus(){
     read -p "Entrez votre choix [1-5] : " choix
     case "$choix" in
         1) statusToHydrate="active";;
-        2) statusToHydrate="Réservé";;
-        3) statusToHydrate="Obsolète";;
-        4) statusToHydrate="DHCP";;
-        5) statusToHydrate="SLAAC";;
+        2) statusToHydrate="reserved";;
+        3) statusToHydrate="deprecated";;
+        4) statusToHydrate="dhcp";;
+        5) statusToHydrate="slaac";;
         *) showError 40 "switchCaseStatus"
     esac
 }
@@ -129,6 +154,7 @@ hydrateObjectForPatch(){
             else
                 echo "Cette IP existe déjà"
                 patchIp
+                return 1
             fi
         else
             ipToHydrate="$ip"
@@ -159,6 +185,7 @@ hydrateObjectForPost(){
         else
             echo "Cette IP existe déjà"
             postIp
+            return 1
         fi
     else
         showError 30 "hydrateObjectForPost"
@@ -167,9 +194,23 @@ hydrateObjectForPost(){
 }
 
 getIpsAndIdDataOnly(){
-    fetchAndApplyRequestApi "$NETBOX_BASE_URL/" "GET"
+    local url="$NETBOX_BASE_URL/"
+    allIps=""
 
-    allIps="$(echo "$NETBOX_DATA" | jq -r '.results[] | "\(.id) \(.address) \(.status.value)"')"
+    while [[ -n "$url" && "$url" != "null" ]]; do
+        fetchAndApplyRequestApi "$url" "GET"
+        local page_ips
+        page_ips="$(echo "$NETBOX_DATA" | jq -r '.results[] | "\(.id) \(.address) \(.status.value)"')"
+        if [[ -n "$page_ips" ]]; then
+            if [[ -n "$allIps" ]]; then
+                allIps+=$'\n'"$page_ips"
+            else
+                allIps="$page_ips"
+            fi
+        fi
+        url="$(echo "$NETBOX_DATA" | jq -r '.next // empty')"
+    done
+
     if [[ -z "$allIps" ]]; then
         showError 10 "getIpsAndIdDataOnly"
     fi
@@ -179,7 +220,7 @@ getIpsAndIdDataOnly(){
 getIdToIp(){
     local ip=$1
     if [[ -n "$allIps" && -n "$ip" ]]; then
-        idToIp="$(echo "$allIps" | grep "$ip" | cut -d ' ' -f 1)"
+        idToIp="$(echo "$allIps" | awk -v ip="$ip" '$2 == ip {print $1}')"
     else
         showError 10 "getIdToIp"
     fi
@@ -258,7 +299,7 @@ main(){
             ;;
         2)
             if postIp; then
-                echo "Ip $ip ajouté avec succès"
+                echo "Ip $ipToHydrate ajouté avec succès"
                 echo "$NETBOX_DATA"
             else
                 showError $? "main"
@@ -274,7 +315,7 @@ main(){
             ;;
         4)
             if deleteIp; then
-                echo "IP $ip supprimé avec succés"
+                echo "IP $ipToHydrate supprimé avec succés"
                 return 0
             else
                 showError $? "main"
