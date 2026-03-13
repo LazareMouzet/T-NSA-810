@@ -9,6 +9,14 @@
 > Projet pédagogique de conception et déploiement d'une infrastructure réseau sécurisée, segmentée et observable sur deux sites interconnectés.
 
 ---
+## Table of content
+
+- [Project Management](docs/project_management/project_management.md)
+    - [Gantt](docs/project_management/gantt.md)
+---
+## Lien vers la documentation du projet : 
+[https://LazareMouzet.github.io/T-NSA-810/](https://LazareMouzet.github.io/T-NSA-810/)
+---
 
 ## 📋 Table des matières
 
@@ -26,19 +34,22 @@
 - [Roadmap](#roadmap)
 - [Limites connues](#limites-connues)
 - [Documentation & livrables](#documentation--livrables)
-- [Contribution](#contribution)
+- [Contribution](./docs/contributing.md)
 - [Auteurs](#auteurs)
 - [Licence](#license)
 
 ---
 
 ## 🎯 Contexte du projet
+
 Ce projet vise à concevoir et déployer une **infrastructure hybride sécurisée**, répartie sur **deux sites distincts** :
+
 - **Site 1**: On-premise
 - **Site 2**: Remote
 , en s’appuyant sur des hyperviseurs **Proxmox** et des services open source.
 
 Le projet est réalisé dans un **cadre pédagogique**, avec des **contraintes fortes de ressources** (nombre limité de VMs), et met l’accent sur :
+
 - la **segmentation réseau**
 - la **sécurité périmétrique**
 - l’**interconnexion inter-sites**
@@ -64,8 +75,10 @@ Ce projet déploie une infrastructure hybride sécurisée composée de :
 - **IPAM NetBox** (gestion documentaire)
 
 ### Diagramme d'architecture
+
 A REVOIR
-```
+
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                         INTERNET                                     │
 └────────────┬───────────────────────────────────────┬─────────────────┘
@@ -86,7 +99,8 @@ A REVOIR
 
 ## 🏗️ Architecture générale
 
-###  Sites
+### Sites
+
 - **Site on-premise**
   - Hébergement des services centraux
   - Considéré comme le site principal
@@ -94,7 +108,8 @@ A REVOIR
   - Exposition contrôlée à Internet grâce à un bastion
   - Hébergement des services accessibles depuis l’extérieur
 
-###  Virtualisation
+### Virtualisation
+
 - 2 hyperviseurs **Proxmox** (un par site)
 - Limite : **3 machines virtuelles maximum par site**
 
@@ -103,19 +118,23 @@ A REVOIR
 ## 🛠️ Technologies utilisées
 
 ### Infrastructure & Virtualisation
+
 - **Proxmox VE** - Hyperviseur de virtualisation open source
 - **pfSense** - Pare-feu et routeur open source
 
 ### Sécurité & Réseau
+
 - **OpenVPN** - Solution VPN site-à-site
 - **DNS Forwarder** - Résolution de noms interne
 
 ### Observabilité & Gestion
+
 - **Elastic Stack** - Centralisation et analyse des logs
   - Elasticsearch
 - **NetBox** - IPAM et source de vérité réseau
 
 ### Services complémentaires
+
 - **Bastion** - Point d'accès sécurisé SSH/RDP
 
 ---
@@ -123,26 +142,28 @@ A REVOIR
 ## ✅ Prérequis
 
 ### Réseau
+
 - Connexion Internet sur chaque site
 - Possibilité de créer des VLANs (recommandé)
 - Plages IP disponibles :
-    - Plan global : 192.168.0.0/20 (4096 adresses soit 16 LAN disponibles)
-    - Site Remote :
-        - LAN SERVICES : 192.168.10.0/24
-        - LAN USERS : 192.168.20.0/24
-        - LAN ADMIN : 192.168.30.0/24
-        - LAN BASTION  : 192.168.40.0/24
-    - Site On-Premise :
-        - LAN SERVICES : 192.168.100.0/24
-        - LAN ADMIN    : 192.168.110.0/24
-    - Réseau VPN :
-        - VPN Site-to-Site : 10.8.0.0/24
+  - Plan global : 192.168.0.0/20 (4096 adresses soit 16 LAN disponibles)
+  - Site Remote :
+    - LAN SERVICES : 192.168.10.0/24
+    - LAN USERS : 192.168.20.0/24
+    - LAN ADMIN : 192.168.30.0/24
+    - LAN BASTION  : 192.168.40.0/24
+  - Site On-Premise :
+    - LAN SERVICES : 192.168.100.0/24
+    - LAN ADMIN    : 192.168.110.0/24
+  - Réseau VPN :
+    - VPN Site-to-Site : 10.8.0.0/24
 
 ---
 
 ## 🔒 Sécurité & segmentation réseau
 
 ### Pare-feu
+
 - **Un pare-feu par site** (pfSense)
 - Chaque pare-feu constitue la **frontière de sécurité** locale
 - Rôles principaux :
@@ -153,21 +174,24 @@ A REVOIR
 ---
 
 A REVOIR
+
 ### DMZ
+
 - Chaque site dispose de sa **propre DMZ**
 - La DMZ est un **réseau intermédiaire**, situé **derrière le pare-feu**
 - Elle héberge uniquement les **services exposés**
 
 #### Contenu de la DMZ
 
-
 #### Exclusions
+
 - Aucun service interne critique
 - Aucun accès direct WAN → LAN
 
 ---
 
 ### Bastion
+
 - Point d’entrée unique pour les accès externes
 - Accès restreint, contrôlé et journalisé
 - Permet l’administration sécurisée des services internes
@@ -177,6 +201,7 @@ A REVOIR
 ## 🌐 Interconnexion inter-sites
 
 ### VPN site-à-site
+
 - Technologie : **OpenVPN**
 - Tunnel chiffré entre les deux pare-feu
 - Permet :
@@ -188,6 +213,7 @@ A REVOIR
 ## 🔧 Services transverses
 
 ### DNS interne (forwarder)
+
 - Service DNS basé sur le **forwarding**
 - Assure la résolution de noms :
   - entre les sites
@@ -197,6 +223,7 @@ A REVOIR
 ---
 
 ### IPAM / Source de vérité
+
 - Outil : **NetBox**
 - Utilisé pour :
   - documenter l’architecture réseau
@@ -206,6 +233,7 @@ A REVOIR
 ---
 
 ### Observabilité & centralisation des logs
+
 - Stack **Elastic**
 - Centralisation des logs :
   - pare-feu
@@ -219,9 +247,13 @@ A REVOIR
 ---
 
 ## 🛡️ Résilience & détection de panne
+
 A REVOIR
+
 ### Témoin logiciel (witness)
-Il peut être ajouté facilement à cette infrastructure 
+
+Il peut être ajouté facilement à cette infrastructure
+
 - Implémenté sous forme de **service léger**
 - Hébergé dans une **VM existante**
 - Rôle :
@@ -233,8 +265,10 @@ Il peut être ajouté facilement à cette infrastructure
 ---
 
 ## 📁 Structure du projet
+
 A REVOIR
-```
+
+```text
 T-NSA-810/
 ├── README.md                    # Ce fichier
 ├── docs/                        # Documentation technique
@@ -261,10 +295,13 @@ T-NSA-810/
 ---
 
 ## 🚀 Installation et déploiement
+
 A REVOIR
+
 ### Phase 1 : Préparation de l'infrastructure
 
 #### 1.1 Installation des hyperviseurs Proxmox
+
 ```bash
 # Sur chaque serveur physique
 # Télécharger Proxmox VE ISO depuis https://www.proxmox.com/
@@ -273,6 +310,7 @@ A REVOIR
 ```
 
 #### 1.2 Création des VMs pare-feu (pfSense)
+
 - Créer une VM par site avec 2 interfaces réseau
 - Installer pfSense depuis l'ISO officiel
 - Configuration minimale : 2 vCPU, 2 GB RAM, 20 GB disque
@@ -280,6 +318,7 @@ A REVOIR
 ### Phase 2 : Configuration de la sécurité
 
 #### 2.1 Configuration des pare-feu
+
 ```bash
 # Accéder à l'interface web de pfSense
 # https://<IP_LAN_PFSENSE>:443
@@ -291,6 +330,7 @@ A REVOIR
 ```
 
 #### 2.2 Création des VLANs et règles de filtrage
+
 - Créer les VLANs pour LAN, DMZ
 - Définir les règles de pare-feu (voir `docs/security/firewall-rules.md`)
 - Activer les logs de connexion
@@ -298,6 +338,7 @@ A REVOIR
 ### Phase 3 : VPN site-à-site
 
 #### 3.1 Configuration OpenVPN sur Site 1 (serveur)
+
 ```bash
 # Dans pfSense > VPN > OpenVPN > Servers
 # Mode : Peer to Peer (SSL/TLS)
@@ -308,6 +349,7 @@ A REVOIR
 ```
 
 #### 3.2 Configuration OpenVPN sur Site 2 (client)
+
 ```bash
 # Dans pfSense > VPN > OpenVPN > Clients
 # Importer les certificats générés sur Site 1
@@ -317,16 +359,19 @@ A REVOIR
 ### Phase 4 : Déploiement des services
 
 #### 4.1 Bastion (DMZ)
+
 - Déployer une VM Debian/Ubuntu en DMZ
 - Installer et configurer SSH avec authentification par clé
 - Configurer fail2ban pour la protection
 
 #### 4.2 DNS Forwarder
+
 - Activer le DNS Forwarder sur pfSense
 - Configurer les entrées DNS internes
 - Tester la résolution entre les sites
 
 #### 4.3 Elastic Stack (observabilité)
+
 ```bash
 # Déployer une VM pour Elastic Stack
 # Installation via Docker Compose recommandée
@@ -334,6 +379,7 @@ docker-compose up -d elasticsearch kibana logstash
 ```
 
 #### 4.4 NetBox (IPAM)
+
 ```bash
 # Déployer NetBox via Docker
 git clone https://github.com/netbox-community/netbox-docker.git
@@ -344,11 +390,13 @@ docker-compose up -d
 ### Phase 5 : Configuration de l'observabilité
 
 #### 5.1 Agents de collecte de logs
+
 - Installer Filebeat sur les pare-feu
 - Configurer l'envoi des logs vers Logstash
 - Créer les dashboards Kibana
 
 #### 5.2 Témoin logiciel (Witness)
+
 ```bash
 # Script Python léger pour la détection de pannes
 # Déploiement sur une VM existante
@@ -356,6 +404,7 @@ python3 witness-monitor.py --config witness.conf
 ```
 
 ### Phase 6 : Tests et validation
+
 - Tester la connectivité inter-sites via VPN
 - Vérifier l'isolation des DMZ
 - Valider l'accès via le bastion
@@ -367,6 +416,7 @@ python3 witness-monitor.py --config witness.conf
 ## 🗓️ Roadmap
 
 ### ✅ Phase actuelle (MVP)
+
 - [x] Architecture réseau segmentée (WAN/DMZ/LAN)
 - [x] Pare-feu pfSense sur chaque site
 - [x] VPN site-à-site OpenVPN
@@ -377,8 +427,10 @@ python3 witness-monitor.py --config witness.conf
 - [x] Témoin logiciel
 
 ### 🔄 Évolutions futures
+
 A REVOIR
 Malgré les contraintes actuelles, l'architecture anticipe :
+
 - [ ] Ajout de nouveaux sites (Site 3, Site 4...)
 - [ ] Duplication de services critiques
 - [ ] Extension du plan d'adressage IP
@@ -392,7 +444,9 @@ Malgré les contraintes actuelles, l'architecture anticipe :
 ---
 
 A REVOIR
+
 ## ⚠️ Limites connues
+
 - Pas de haute disponibilité automatique
 - Ressources limitées (nombre de VMs)
 - Pare-feu non redondés
@@ -405,6 +459,7 @@ Ces limites sont **assumées et documentées**.
 ## 📚 Documentation & livrables
 
 ### Documentation technique
+
 - 📊 Schémas d'infrastructure (diagrammes réseau)
 - 🗓️ Planning prévisionnel (diagramme de Gantt)
 - 🌐 Description détaillée des flux réseau
@@ -413,48 +468,17 @@ Ces limites sont **assumées et documentées**.
 - 🔧 Guides d'installation et de maintenance
 
 ### Livrables finaux
+
 - 📄 Rapport technique complet
 - 🎤 Support de soutenance
 - 💾 Fichiers de configuration (anonymisés)
 
 ---
 
-## 🤝 Contribution
-
-Ce projet est réalisé dans un cadre pédagogique. Les contributions sont limitées aux membres de l'équipe projet.
-
-### Pour l'équipe
-
-#### Guidelines de contribution
-1. Créer une branche pour chaque fonctionnalité : `git checkout -b feature/nom-fonctionnalite`
-2. Commiter régulièrement avec des messages explicites
-3. Documenter toute modification d'architecture
-4. Tester avant de merger dans `main`
-
-#### Workflow Git
-```bash
-# Cloner le repository
-git clone <repository-url>
-cd T-NSA-810
-
-# Créer une branche
-git checkout -b feature/ma-fonctionnalite
-
-# Faire vos modifications
-git add .
-git commit -m "Description claire de la modification"
-
-# Pousser la branche
-git push origin feature/ma-fonctionnalite
-
-# Créer une Pull Request pour review
-```
-
----
-
 ## 👥 Auteurs
 
-**Équipe T-NSA-810**
+### Équipe T-NSA-810
+
 - Étudiant(s) en Master/Ingénierie Systèmes et Réseaux
 - Établissement : Epitech
 - Promotion : 2025-2027
@@ -477,6 +501,7 @@ Ce projet est réalisé dans un cadre pédagogique et n'est pas destiné à une 
 ## 🎯 Objectifs pédagogiques
 
 Ce projet démontre la maîtrise de :
+
 - ✅ **Architecture réseau sécurisée** - Conception d'une infrastructure multi-sites
 - ✅ **Segmentation réseau** - Isolation DMZ/LAN et gestion des flux
 - ✅ **Sécurité périmétrique** - Configuration avancée de pare-feu
