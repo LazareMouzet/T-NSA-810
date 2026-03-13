@@ -1,0 +1,57 @@
+---
+name: Block binary files & PDFs
+
+"on":
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+
+jobs:
+  block-binaries:
+    name: Prevent binary files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect new/modified binary files (including PDFs)
+        run: |
+          set -e
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          else
+            BASE_SHA="${{ github.event.before }}"
+            HEAD_SHA="${{ github.sha }}"
+          fi
+
+          echo "Comparing changes between $BASE_SHA and $HEAD_SHA"
+
+          CHANGED_FILES=$(git diff --name-only --diff-filter=AM "$BASE_SHA" "$HEAD_SHA")
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "Aucun fichier ajouté ou modifié."
+            exit 0
+          fi
+
+          echo "Fichiers ajoutés/modifiés :"
+          echo "$CHANGED_FILES"
+
+          # Extensions considérées comme binaires (ajoute/retire selon ton besoin)
+          BINARY_PATTERN='\.(pdf|png|jpe?g|gif|bmp|svgz?|ico|webp|mp3|wav|flac|mp4|mkv|mov|avi|wmv|zip|tar|tgz|gz|bz2|xz|7z|rar|iso|img|exe|dll|so|dylib|bin|jar|class|o|a)$'
+
+          VIOLATIONS=$(printf '%s\n' "$CHANGED_FILES" | grep -Ei "$BINARY_PATTERN" || true)
+
+          if [ -n "$VIOLATIONS" ]; then
+            echo "::error::Des fichiers binaires (dont PDFs) ont été détectés dans ce push / PR :"
+            printf '%s\n' "$VIOLATIONS"
+            echo "Ces types de fichiers sont interdits dans ce dépôt."
+            exit 1
+          fi
+
+          echo "Aucun fichier binaire interdit détecté."
