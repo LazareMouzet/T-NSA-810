@@ -1,0 +1,40 @@
+---
+name: Block binary files
+
+"on":
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+
+jobs:
+  block-binaries:
+    name: Prevent binary files
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect forbidden binary files in repo
+        run: |
+          set -e
+
+          # Extensions interdites (ajoute/retire selon ton besoin)
+          BINARY_PATTERN='\.(pdf|exe|dll|docx|xlsx|pptx|doc|xls|ppt)$'
+
+          echo "Scan de l'ensemble des fichiers suivis par Git..."
+          ALL_FILES=$(git ls-files)
+
+          VIOLATIONS=$(printf '%s\n' "$ALL_FILES" | grep -Ei "$BINARY_PATTERN" || true)
+
+          if [ -n "$VIOLATIONS" ]; then
+            echo "::error::Des fichiers binaires ont été détectés dans ce push / PR :"
+            printf '%s\n' "$VIOLATIONS"
+            echo "Ces types de fichiers sont interdits dans ce dépôt."
+            exit 1
+          fi
+
+          echo "Aucun fichier binaire interdit détecté."
