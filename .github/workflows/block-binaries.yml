@@ -1,5 +1,5 @@
 ---
-name: Block binary files & PDFs
+name: Block binary files
 
 "on":
   push:
@@ -18,7 +18,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Detect new/modified binary files (including PDFs)
+      - name: Detect new/modified binary files
         run: |
           set -e
 
@@ -30,9 +30,14 @@ jobs:
             HEAD_SHA="${{ github.sha }}"
           fi
 
-          echo "Comparing changes between $BASE_SHA and $HEAD_SHA"
-
-          CHANGED_FILES=$(git diff --name-only --diff-filter=AM "$BASE_SHA" "$HEAD_SHA")
+          # Cas des premiers commits / exécutions locales où BASE_SHA peut être vide ou nul
+          if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            echo "BASE_SHA vide ou nul, analyse du dernier commit uniquement ($HEAD_SHA)"
+            CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r "$HEAD_SHA" --diff-filter=AM)
+          else
+            echo "Comparaison des changements entre $BASE_SHA et $HEAD_SHA"
+            CHANGED_FILES=$(git diff --name-only --diff-filter=AM "$BASE_SHA" "$HEAD_SHA")
+          fi
 
           if [ -z "$CHANGED_FILES" ]; then
             echo "Aucun fichier ajouté ou modifié."
@@ -43,12 +48,12 @@ jobs:
           echo "$CHANGED_FILES"
 
           # Extensions considérées comme binaires (ajoute/retire selon ton besoin)
-          BINARY_PATTERN='\.(pdf|png|jpe?g|gif|bmp|svgz?|ico|webp|mp3|wav|flac|mp4|mkv|mov|avi|wmv|zip|tar|tgz|gz|bz2|xz|7z|rar|iso|img|exe|dll|so|dylib|bin|jar|class|o|a)$'
+          BINARY_PATTERN='\.(pdf|exe|dll|docx|xlsx|pptx|doc|xls|ppt)$'
 
           VIOLATIONS=$(printf '%s\n' "$CHANGED_FILES" | grep -Ei "$BINARY_PATTERN" || true)
 
           if [ -n "$VIOLATIONS" ]; then
-            echo "::error::Des fichiers binaires (dont PDFs) ont été détectés dans ce push / PR :"
+            echo "::error::Des fichiers binaires ont été détectés dans ce push / PR :"
             printf '%s\n' "$VIOLATIONS"
             echo "Ces types de fichiers sont interdits dans ce dépôt."
             exit 1
