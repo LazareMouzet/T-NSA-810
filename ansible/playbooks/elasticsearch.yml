@@ -1,0 +1,10 @@
+---
+- name: Deploiement d'Elasticsearch
+  hosts: monitoring
+  become: true
+
+  vars:
+    elastic_version: "8.19.12"
+
+  roles:
+    - elasticsearch

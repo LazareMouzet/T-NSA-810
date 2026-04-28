@@ -1,0 +1,52 @@
+---
+all:
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+  children:
+    datacenter:
+      hosts:
+        outils:
+          ansible_host: "{{ vault_become_host_outils }}"
+          ansible_user: "{{ vault_become_user_outils }}"
+          ansible_port: "{{ vault_become_port_outils | int }}"
+          ansible_become_method: sudo
+          ansible_become_password: "{{ vault_become_password_outils }}"
+          ansible_ssh_private_key_file: /home/scorpion/.ssh/id_ed25519
+          ansible_ssh_common_args: >
+            '-o ProxyCommand="ssh -W %h:%p
+            -i /home/scorpion/.ssh/id_ed25519
+            -p {{ vault_become_port_bastion }} {{ vault_become_user_bastion }}@{{ vault_become_host_bastion }}"
+            -o StrictHostKeyChecking=no'
+        monitoring:
+          ansible_host: "{{ vault_become_host_monitoring }}"
+          ansible_user: "{{ vault_become_user_monitoring }}"
+          ansible_port: "{{ vault_become_port_monitoring | int }}"
+          ansible_become_method: sudo
+          ansible_become_password: "{{ vault_become_password_monitoring }}"
+          ansible_ssh_private_key_file: /home/scorpion/.ssh/id_ed25519
+          ansible_ssh_common_args: >
+            '-o ProxyCommand="ssh -W %h:%p
+            -i /home/scorpion/.ssh/id_ed25519
+            -p {{ vault_become_port_bastion }} {{ vault_become_user_bastion }}@{{ vault_become_host_bastion }}"
+            -o StrictHostKeyChecking=no'
+    remote:
+      hosts:
+        bastion:
+          ansible_host: "{{ vault_become_host_bastion }}"
+          ansible_user: "{{ vault_become_user_bastion }}"
+          ansible_port: "{{ vault_become_port_bastion | int }}"
+          ansible_become_method: sudo
+          ansible_become_password: "{{ vault_become_password_bastion }}"
+          ansible_ssh_private_key_file: ~/.ssh/id_ed25519
+        intranet:
+          ansible_host: "{{ vault_become_host_intranet }}"
+          ansible_user: "{{ vault_become_user_intranet }}"
+          ansible_port: "{{ vault_become_port_intranet | int }}"
+          ansible_become_method: sudo
+          ansible_become_password: "{{ vault_become_password_intranet }}"
+          ansible_ssh_private_key_file: /home/scorpion/.ssh/id_ed25519
+          ansible_ssh_common_args: >
+            '-o ProxyCommand="ssh -W %h:%p
+            -i /home/scorpion/.ssh/id_ed25519
+            -p {{ vault_become_port_bastion }} {{ vault_become_user_bastion }}@{{ vault_become_host_bastion }}"
+            -o StrictHostKeyChecking=no'

@@ -25,8 +25,10 @@ jobs:
       # 2. Ansible Lint
       - name: Ansible Lint
         uses: ansible/ansible-lint@main
+        env:
+          ANSIBLE_ROLES_PATH: ansible/roles
         with:
-          path: "scripts/"
+          path: "ansible/"
 
       # 3. Action Lint
       - name: GitHub Action Lint

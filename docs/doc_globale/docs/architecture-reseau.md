@@ -1,8 +1,8 @@
 # Architecture réseau détaillé
 
-## Description et rôle des réseaux 
+## Description et rôle des réseaux
 
-## Plan d'adressage IP 
+## Plan d'adressage IP
 
 ### Objectifs du plan d'adressage
 

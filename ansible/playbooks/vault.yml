@@ -1,0 +1,10 @@
+---
+- name: Déploiement de HasiCorp Vault
+  hosts: outils
+  become: true
+
+  vars:
+    vault_version: "1.21.4"
+
+  roles:
+    - vault

@@ -1,6 +1,6 @@
 # Justification des choix technologiques
 
-## Proxmox 
+## Proxmox
 
 Proxmox VE est une plateforme de virtualisation open-source basée sur
 KVM et LXC, largement utilisée en environnement professionnel.
@@ -24,7 +24,7 @@ Proxmox permet de simuler une infrastructure d'entreprise réaliste, tout
 en respectant la contrainte de ressources (3 VM max par site), et sert
 de socle à l'ensemble de l'architecture Cloud privée.
 
-## PfSense 
+## PfSense
 
 pfSense est une solution de pare-feu open-source reconnue, utilisée en
 production dans de nombreuses entreprises.
@@ -47,7 +47,7 @@ pfSense joue un rôle central dans la segmentation réseau, le contrôle
 des flux inter-sites et la protection des ressources critiques,
 garantissant un haut niveau de sécurité.
 
-## OpenVPN 
+## OpenVPN
 
 OpenVPN est une solution VPN éprouvée, robuste et largement adoptée.
 
@@ -92,7 +92,7 @@ Valeur apportée au projet
 NetBox apporte une traçabilité et une documentation structurée du
 réseau, indispensable dans un contexte multi-sites et orienté sécurité.
 
-## Elasticsearch 
+## Elasticsearch
 
 ElasticSearch est une solution de collecte et d'analyse de logs utilisée
 à grande échelle dans les environnements Cloud et sécurité.

@@ -1,0 +1,89 @@
+---
+- name: Créer un virtualenv et installer pynetbox
+  ansible.builtin.pip:
+    name: pynetbox
+    state: present
+    virtualenv: "/opt/ansible-netbox/venv"
+    virtualenv_command: /usr/bin/python3 -m venv
+  delegate_to: outils
+  run_once: true
+
+- name: Tâche IPAM Netbox
+  vars:
+    ansible_python_interpreter: "/opt/ansible-netbox/venv/bin/python"
+  delegate_to: outils
+  block:
+    - name: Récupérer ou créer le type de cluster
+      netbox.netbox.netbox_cluster_type:
+        netbox_url: "{{ netbox_base_url }}"
+        netbox_token: "{{ netbox_token_api }}"
+        data:
+          name: "{{ netbox_cluster_type | default('Proxmox') }}"
+        state: present
+        validate_certs: false
+      delegate_to: outils
+      register: vm_ip_to_netbox_cluster_type
+
+    - name: "Créer ou récupérer le Cluster (Datacenter ou Remote)"
+      netbox.netbox.netbox_cluster:
+        netbox_url: "{{ netbox_base_url }}"
+        netbox_token: "{{ netbox_token_api }}"
+        data:
+          name: "{{ netbox_cluster }}"
+          cluster_type: "{{ vm_ip_to_netbox_cluster_type.cluster_type.name }}"
+        state: present
+        validate_certs: false
+      delegate_to: outils
+      register: vm_ip_to_netbox_cluster
+
+    - name: "Créer ou récupérer la Virtual Machine"
+      netbox.netbox.netbox_virtual_machine:
+        netbox_url: "{{ netbox_base_url }}"
+        netbox_token: "{{ netbox_token_api }}"
+        data:
+          name: "{{ inventory_hostname }}"
+          cluster: "{{ vm_ip_to_netbox_cluster.cluster.name }}"
+          status: "active"
+        state: present
+        validate_certs: false
+      delegate_to: outils
+      register: vm_ip_to_netbox_vm
+
+    - name: "Créer l'interface sur la VM"
+      netbox.netbox.netbox_vm_interface:
+        netbox_url: "{{ netbox_base_url }}"
+        netbox_token: "{{ netbox_token_api }}"
+        data:
+          virtual_machine: "{{ inventory_hostname }}"
+          name: "{{ ansible_default_ipv4.interface}}"
+          enabled: true
+        state: present
+        validate_certs: false
+      delegate_to: outils
+      register: vm_ip_to_netbox_vm_interface
+
+    - name: "Créer l'IP attachée à l'interface"
+      netbox.netbox.netbox_ip_address:
+        netbox_url: "{{ netbox_base_url }}"
+        netbox_token: "{{ netbox_token_api }}"
+        data:
+          address: "{{ ansible_default_ipv4.address }}/{{ ansible_default_ipv4.prefix }}"
+          status: "active"
+          assigned_object:
+            virtual_machine: "{{ inventory_hostname }}"
+            name: "{{ ansible_default_ipv4.interface }}"
+        state: present
+        validate_certs: false
+      delegate_to: outils
+      register: vm_ip_to_netbox_vm_ip
+
+    - name: "Définir l'IP primaire sur la VM"
+      netbox.netbox.netbox_virtual_machine:
+        netbox_url: "{{ netbox_base_url }}"
+        netbox_token: "{{ netbox_token_api }}"
+        data:
+          name: "{{ inventory_hostname }}"
+          primary_ip4: "{{ vm_ip_to_netbox_vm_ip.ip_address.address }}"
+        state: present
+        validate_certs: false
+      delegate_to: outils

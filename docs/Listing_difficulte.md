@@ -28,10 +28,10 @@ Ce document vise à répertorier et suivre l'ensemble des difficultés technique
 ## Difficultés Techniques
 
 ### [ID-001] - Perte de l'adresse du WAN sur la VM pfSense
-**Date de détection** : 26/01/2026  
-**Statut** : 🟢 Résolu  
-**État** : ✅ Résolu  
-**Module/Composant concerné** : Infrastructure réseau / Virtualisation  
+**Date de détection** : 26/01/2026
+**Statut** : 🟢 Résolu
+**État** : ✅ Résolu
+**Module/Composant concerné** : Infrastructure réseau / Virtualisation
 **Personnes impliquées** : @Salah, @Moise
 
 #### Description
@@ -63,7 +63,7 @@ Symptômes observés :
 #### Solution finale
 - **Date de résolution** : 05/02/2026
 - **Description de la solution** : Appel à @Moise (responsable de l'infrastructure fournie) qui nous a communiqué l'adresse IP du WAN. Reconfiguration manuelle de l'interface WAN de pfSense avec les paramètres corrects.
-- **Actions mises en place** : 
+- **Actions mises en place** :
   - Récupération de l'adresse WAN auprès de @Moise
   - Réécriture de la configuration réseau de l'interface WAN
   - Vérification de la connectivité et retour à la normale
@@ -82,10 +82,10 @@ Symptômes observés :
 ---
 
 ### [ID-002] - Difficulté de connexion des VMs au réseau
-**Date de détection** : 15/02/2026  
-**Statut** : 🟠 Majeur  
-**État** : ⏳ En cours  
-**Module/Composant concerné** : Infrastructure réseau / Virtualisation  
+**Date de détection** : 15/02/2026
+**Statut** : 🟠 Majeur
+**État** : ⏳ En cours
+**Module/Composant concerné** : Infrastructure réseau / Virtualisation
 **Personnes impliquées** : @équipe infrastructure
 
 #### Description
@@ -115,9 +115,9 @@ Symptômes observés :
 
 #### Solution finale
 - **Date de résolution** : En attente
-- **Description de la solution** : 
-- **Actions mises en place** : 
-- **Coût (temps/ressources)** : 
+- **Description de la solution** :
+- **Actions mises en place** :
+- **Coût (temps/ressources)** :
 
 #### Leçons apprises
 - Nécessité de documenter clairement l'architecture réseau dès le départ

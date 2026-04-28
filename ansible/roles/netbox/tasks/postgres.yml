@@ -1,0 +1,59 @@
+---
+- name: Install PostgreSQL packages
+  ansible.builtin.apt:
+    name:
+      - postgresql
+      - postgresql-contrib
+      - python3-psycopg2
+    state: present
+    update_cache: true
+  notify:
+    - Démarrage et activation de Postgresql
+    - Démarrage et activation de Redis
+
+# - name: Création du dossier tmp ansible pour postgres
+#   file:
+#     path: /var/lib/postgresql/.ansible/tmp
+#     state: directory
+#     owner: postgres
+#     group: postgres
+#     mode: '0700'
+
+- name: "Create Netbox DB User"
+  community.postgresql.postgresql_user:
+    name: "{{ netbox_db_user_name }}"
+    password: "{{ netbox_db_user_password }}"
+    role_attr_flags: LOGIN
+  become: true
+  become_user: postgres
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Create Netbox DB
+  community.postgresql.postgresql_db:
+    name: "{{ netbox_db_name }}"
+    owner: "{{ netbox_db_user_name }}"
+    encoding: UTF-8
+  become: true
+  become_user: postgres
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Set DB parameters
+  community.postgresql.postgresql_query:
+    login_db: "{{ netbox_db_name }}"
+    query: |
+      ALTER ROLE {{ netbox_db_user_name }} SET client_encoding TO 'utf8';
+      ALTER ROLE {{ netbox_db_user_name }} SET default_transaction_isolation TO 'read committed';
+      ALTER ROLE {{ netbox_db_user_name }} SET timezone TO 'UTC';
+  become: true
+  become_user: postgres
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Grant privileges
+  community.postgresql.postgresql_privs:
+    login_db: "{{ netbox_db_name }}"
+    privs: ALL
+    type: database
+    role: "{{ netbox_db_user_name }}"
+  become: true
+  become_user: postgres
+  ignore_errors: "{{ ansible_check_mode }}"

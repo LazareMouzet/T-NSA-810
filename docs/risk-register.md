@@ -1,7 +1,7 @@
 # Risk Register
 
-**Projet :** T-NSA-810 — Infrastructure Hybride Sécurisée Multi-Sites  
-**Équipe :** Équipe T-NSA-810 — Epitech 2025-2027  
+**Projet :** T-NSA-810 — Infrastructure Hybride Sécurisée Multi-Sites
+**Équipe :** Équipe T-NSA-810 — Epitech 2025-2027
 **Dernière mise à jour :** 2026-02-23
 
 ---
@@ -14,7 +14,7 @@
 | 🟡 Moyen | 20 – 60 % | Retard ou dégradation d'une fonctionnalité |
 | 🔴 Élevé | > 60 % | Blocage d'un livrable ou remise en cause de l'architecture |
 
-Le **score de risque** est calculé comme suit : `Probabilité (1–5) × Impact (1–5)`.  
+Le **score de risque** est calculé comme suit : `Probabilité (1–5) × Impact (1–5)`.
 Un score ≥ 12 déclenche un plan de mitigation prioritaire.
 
 ---

@@ -1,0 +1,33 @@
+---
+- name: Installation des paquets Ansible dans le venv
+  ansible.builtin.pip:
+    name:
+      - proxmoxer
+      - requests
+    state: present
+
+- name: Récupération des informations VMs via API
+  ansible.builtin.uri:
+    url: "https://{{ vault_proxmox_api_host_dc1 }}:8006/api2/json/nodes/vm2/qemu"
+    method: GET
+    headers:
+      Authorization: "{{ proxmox_auth_header }}"
+    validate_certs: false
+  register: proxmox_infos
+
+- name: Debug
+  ansible.builtin.debug:
+    var: proxmox_infos
+
+- name: Récupération de la config quemu
+  ansible.builtin.uri:
+    url: "https://{{ vault_proxmox_api_host_dc1 }}:8006/api2/json/nodes/vm2/qemu/152/agent/get-hostname"
+    method: GET
+    headers:
+      Authorization: "{{ proxmox_auth_header }}"
+    validate_certs: false
+  register: proxmox_network_info
+
+- name: Debug
+  ansible.builtin.debug:
+    var: proxmox_network_info
