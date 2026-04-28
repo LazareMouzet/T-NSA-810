@@ -467,5 +467,5 @@ Symptômes observés :
 | Date | Auteur | Modifications |
 |------|--------|---------------|
 | JJ/MM/AAAA | Nom | Création du document |
-| 20/04/2026 | @équipe infrastructure | Ajout des incidents ID-003 à ID-007 + mise à jour classification/statistiques/actions préventives |
+| 20/04/2026 | @Gwendoline | Ajout des incidents ID-003 à ID-007 + mise à jour classification/statistiques/actions préventives |
 | | | |
