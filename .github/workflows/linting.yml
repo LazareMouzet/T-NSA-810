@@ -26,7 +26,7 @@ jobs:
       - name: Ansible Lint
         uses: ansible/ansible-lint@main
         with:
-          path: "scripts/"
+          working_directory: "ansible/"
 
       # 3. Action Lint
       - name: GitHub Action Lint
