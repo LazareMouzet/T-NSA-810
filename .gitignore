@@ -3,3 +3,4 @@
 venv
 .vault-pass
 .vscode
+ssh-path.yml
