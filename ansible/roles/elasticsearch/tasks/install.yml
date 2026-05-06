@@ -4,11 +4,6 @@
     path: "/etc/elasticsearch/elasticsearch.yml"
   register: elasticsearch_rep
 
-# - name: Installer OpenJDK 17
-#   apt:
-#     name: openjdk-17-jdk
-#     state: present
-
 - name: Installer apt-transport-https
   ansible.builtin.apt:
     name: apt-transport-https

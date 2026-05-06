@@ -1,3 +1,5 @@
 .env
 .vscode
 venv
+.vault-pass
+.vscode

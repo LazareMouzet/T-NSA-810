@@ -11,14 +11,6 @@
     - Démarrage et activation de Postgresql
     - Démarrage et activation de Redis
 
-# - name: Création du dossier tmp ansible pour postgres
-#   file:
-#     path: /var/lib/postgresql/.ansible/tmp
-#     state: directory
-#     owner: postgres
-#     group: postgres
-#     mode: '0700'
-
 - name: "Create Netbox DB User"
   community.postgresql.postgresql_user:
     name: "{{ netbox_db_user_name }}"
