@@ -55,7 +55,7 @@
         netbox_token: "{{ netbox_token_api }}"
         data:
           virtual_machine: "{{ inventory_hostname }}"
-          name: "{{ ansible_default_ipv4.interface}}"
+          name: "{{ ansible_default_ipv4.interface }}"
           enabled: true
         state: present
         validate_certs: false
