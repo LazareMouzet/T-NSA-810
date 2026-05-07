@@ -1,0 +1,4 @@
+---
+netbox_base_url: "https://{{ vault_become_host_outils }}:443"
+netbox_cluster_type: "Proxmox"
+netbox_cidr: 24

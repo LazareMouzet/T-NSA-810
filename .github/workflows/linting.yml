@@ -23,10 +23,19 @@ jobs:
           config_data: "{extends: default, rules: {line-length: disable}}"
 
       # 2. Ansible Lint
+<<<<<<< feat/170-ansible
+      - name: Ansible Lint
+        uses: ansible/ansible-lint@main
+        env:
+          ANSIBLE_ROLES_PATH: ansible/roles
+        with:
+          path: "ansible/"
+=======
       # - name: Ansible Lint
       #   uses: ansible/ansible-lint@main
       #   with:
       #     working_directory: "ansible/"
+>>>>>>> dev
 
       # 3. Action Lint
       - name: GitHub Action Lint

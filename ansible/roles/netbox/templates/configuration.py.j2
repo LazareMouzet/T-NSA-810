@@ -1,0 +1,57 @@
+ALLOWED_HOSTS = ['{{ netbox_allowed_host }}', 'localhost', '127.0.0.1']
+
+DATABASE = {
+    'NAME': '{{ netbox_db_name }}',
+    'USER': '{{ netbox_db_user_name }}',
+    'PASSWORD': '{{ netbox_db_user_password }}',
+    'HOST': '{{ netbox_db_host }}',
+    'PORT': '',
+    'CONN_MAX_AGE': 300,
+}
+
+REDIS = {
+    'tasks': {
+        'HOST': '{{ redis_host }}',
+        'PORT': {{ redis_port }},
+        'PASSWORD': '',
+        'DATABASE': 0,
+        'SSL': False,
+    },
+    'caching': {
+        'HOST': '{{ redis_host }}',
+        'PORT': {{ redis_port }},
+        'PASSWORD': '',
+        'DATABASE': 1,
+        'SSL': False,
+    }
+}
+
+SECRET_KEY = '{{ netbox_secret_key }}'
+
+# Optionnel — activer le débogage uniquement en développement
+DEBUG = False
+
+# Optionnel — fuseau horaire de l'interface
+TIME_ZONE = 'Europe/Paris'
+
+# API Cross-Origin Resource Sharing (CORS) settings
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = [
+    # 'https://hostname.example.com',
+]
+CORS_ORIGIN_REGEX_WHITELIST = [
+    # r'^(https?://)?(\w+\.)?example\.com$',
+]
+
+# The name to use for the CSRF token cookie.
+CSRF_COOKIE_NAME = 'csrftoken'
+
+# Trusted origins for CSRF protection (required for POST forms through a proxy or tunnel)
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost:8443',   # tunnel SSH
+    'https://127.0.0.1:8443',   # tunnel SSH alternative
+    'https://{{ netbox_allowed_host }}',  # accès direct IP interne
+]
+
+# Debug mode
+DEBUG = False

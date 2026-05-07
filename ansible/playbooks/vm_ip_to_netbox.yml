@@ -1,0 +1,7 @@
+---
+- name: Récupération des informations réseaux
+  hosts: all
+  gather_facts: true
+
+  roles:
+    - vm_ip_to_netbox

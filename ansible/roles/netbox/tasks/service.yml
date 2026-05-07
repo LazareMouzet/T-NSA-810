@@ -1,0 +1,31 @@
+---
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Démarrage et activation de Postgresql
+  ansible.builtin.systemd:
+    name: postgresql
+    state: started
+    enabled: true
+
+- name: Démarrage et activation de Redis
+  ansible.builtin.systemd:
+    name: redis
+    state: started
+    enabled: true
+
+- name: Démarrage et activation de Nginx
+  ansible.builtin.systemd:
+    name: nginx
+    state: started
+    enabled: true
+
+- name: Démarrage et activation de NetBox
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - netbox
+    - netbox-rq

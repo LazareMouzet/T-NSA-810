@@ -1,0 +1,36 @@
+---
+- name: Création du service systemd Vault
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/vault.service
+    content: |
+      [Unit]
+      Description=HashiCorp Vault
+      Documentation=https://developer.hashicorp.com/vault/docs
+      Requires=network-online.target
+      After=network-online.target
+
+      [Service]
+      User=vault
+      Group=vault
+      ExecStart=/usr/local/bin/vault server -config=/etc/vault.d/vault.hcl
+      ExecReload=/bin/kill --signal HUP $MAINPID
+      KillMode=process
+      KillSignal=SIGINT
+      Restart=on-failure
+      RestartSec=5
+      LimitNOFILE=65536
+
+      [Install]
+      WantedBy=multi-user.target
+    mode: '0644'
+  notify: restart vault
+
+- name: Rechargement systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Demarrage et activation de Vault
+  ansible.builtin.service:
+    name: vault
+    state: started
+    enabled: true
