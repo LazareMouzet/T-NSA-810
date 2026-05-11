@@ -1,0 +1,14 @@
+---
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Enable Elasticsearch
+  ansible.builtin.systemd:
+    name: elasticsearch
+    enabled: true
+
+- name: Start Elasticsearch
+  ansible.builtin.systemd:
+    name: elasticsearch
+    state: started

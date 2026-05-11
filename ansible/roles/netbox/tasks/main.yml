@@ -1,0 +1,19 @@
+---
+- name: Import de la tâche install
+  ansible.builtin.import_tasks: install.yml
+- name: Import de la tâche postgres
+  ansible.builtin.import_tasks: postgres.yml
+- name: Import de la tâche netbox
+  ansible.builtin.import_tasks: netbox.yml
+- name: Import de la tâche configure_netbox
+  ansible.builtin.import_tasks: configure_netbox.yml
+- name: Import de la tâche superuser
+  ansible.builtin.import_tasks: superuser.yml
+- name: Import de la tâche services_systemd
+  ansible.builtin.import_tasks: services_systemd.yml
+- name: Import de la tâche nginx
+  ansible.builtin.import_tasks: nginx.yml
+- name: Import de la tâche configure_nginx
+  ansible.builtin.import_tasks: configure_nginx.yml
+- name: Import de la tâche service
+  ansible.builtin.import_tasks: service.yml

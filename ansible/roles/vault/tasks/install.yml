@@ -1,0 +1,17 @@
+---
+- name: Vérification si Vault est déjà installé
+  ansible.builtin.stat:
+    path: "/usr/local/bin/vault"
+  register: vault_binary
+
+- name: "Téléchargement de Vault"
+  ansible.builtin.get_url:
+    url: "https://releases.hashicorp.com/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_amd64.zip"
+    dest: /tmp/vault.zip
+    mode: '0644'
+  when: not vault_binary.stat.exists
+
+- name: "Installation de unzip"
+  ansible.builtin.apt:
+    name: unzip
+    state: present

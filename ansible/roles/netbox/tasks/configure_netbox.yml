@@ -1,0 +1,47 @@
+---
+- name: Check if netbox user exists
+  ansible.builtin.command: id netbox
+  register: netbox_user_check
+  changed_when: false
+  ignore_errors: true
+
+- name: Création de l'utilisateur système Netbox
+  ansible.builtin.user:
+    name: netbox
+    system: true
+    shell: /bin/false
+    home: /opt/netbox
+    create_home: true
+  when: netbox_user_check.rc != 0
+
+- name: Ensure correct permissions on Netbox home
+  ansible.builtin.file:
+    path: /opt/netbox
+    owner: netbox
+    group: netbox
+    mode: '0755'
+    state: directory
+
+- name: Collect static files
+  ansible.builtin.command:
+    cmd: /opt/netbox/venv/bin/python manage.py collectstatic --no-input
+    chdir: /opt/netbox/netbox
+  changed_when: false
+  become: true
+  become_user: netbox
+
+- name: Ensure static directory ownership
+  ansible.builtin.file:
+    path: /opt/netbox/netbox/static
+    owner: netbox
+    group: netbox
+    recurse: true
+
+- name: Déploiement de la configuration Netbox
+  ansible.builtin.template:
+    src: configuration.py.j2
+    dest: /opt/netbox/netbox/netbox/configuration.py
+    owner: netbox
+    group: netbox
+    mode: '0600'
+  notify: restart Netbox

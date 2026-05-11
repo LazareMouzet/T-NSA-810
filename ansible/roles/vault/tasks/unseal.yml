@@ -1,0 +1,57 @@
+---
+- name: Création du dossier secrets
+  ansible.builtin.file:
+    path: /etc/vault.d/secrets
+    state: directory
+    owner: vault
+    group: vault
+    mode: '0700'
+
+- name: Déploiement de l'unseal key
+  ansible.builtin.copy:
+    content: "{{ vault_unseal_key }}"
+    dest: /etc/vault.d/secrets/unseal_key
+    owner: vault
+    group: vault
+    mode: '0600'
+
+- name: Déploiement du script auto-unseal
+  ansible.builtin.copy:
+    dest: /usr/local/bin/vault-unseal.sh
+    owner: vault
+    group: vault
+    mode: '0600'
+    content: |
+      #!/bin/bash
+      sleep 5
+      UNSEAL_KEY=$(cat /etc/vault.d/secrets/unseal_key)
+      export VAULT_ADDR="http://127.0.0.1:8200"
+      vault operator unseal "$UNSEAL_KEY"
+      unset UNSEAL_KEY
+
+- name: Création du service vault-unseal
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/vault-unseal.service
+    owner: vault
+    group: vault
+    mode: '0600'
+    content: |
+      [Unit]
+      Description=Vault Auto-Unseal
+      After=vault.service
+      Requires=vault.service
+
+      [Service]
+      Type=oneshot
+      User=vault
+      ExecStart=/usr/local/bin/vault-unseal.sh
+      RemainAfterExit=yes
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Activation du service vault-unseal
+  ansible.builtin.systemd:
+    name: vault-unseal
+    enabled: true
+    daemon_reload: true

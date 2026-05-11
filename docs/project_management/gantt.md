@@ -7,10 +7,10 @@ gantt
   dateFormat YYYY-MM-DD
 
   section Milestones
-  Follow-up 1 (Scoping) : milestone, m843, 2026-03-02, 0d
-  Follow-up 2 (Building Blocks) : milestone, m973, 2026-04-27, 0d
-  Follow-up 3 (Beta) : milestone, m775, 2026-06-01, 0d
-  Final Delivery : milestone, m219, 2026-06-14, 0d
+  Follow-up 1 (Scoping) : milestone, m251, 2026-03-02, 0d
+  Follow-up 2 (Building Blocks) : milestone, m623, 2026-04-27, 0d
+  Follow-up 3 (Beta) : milestone, m352, 2026-06-01, 0d
+  Final Delivery : milestone, m800, 2026-06-14, 0d
 
   section Other
   EPIC 1 — Project Foundation & GitOps Setup : 2026-01-12, 2026-02-23
@@ -101,6 +101,7 @@ gantt
   TASK 4.3.11 — Documentation : 2026-05-04, 2026-06-01
   TASK 3.2.6 — Document on adding a site (scalability) : 2026-05-04, 2026-06-14
   TASK 3.2.7 — Document on disaster recovery : 2026-05-04, 2026-06-14
+  TASK 6.4.4 - Kill Switch : 2026-05-04, 2026-06-01
   STORY 4.4 — Install and Configure internal website (Site Remote) : 2026-05-05, 2026-06-01
   TASK 5.4.7 - Ansible  Create basic Vault policies : 2026-05-05, 2026-06-01
   TASK 5.4.8 - Migrate secrets to Vault : 2026-05-05, 2026-06-01

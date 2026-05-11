@@ -1,0 +1,9 @@
+---
+- name: Import de la tâche install
+  ansible.builtin.import_tasks: install.yml
+- name: Import de la tâche configure
+  ansible.builtin.import_tasks: configure.yml
+- name: Import de la tâche service
+  ansible.builtin.import_tasks: service.yml
+- name: Import de la tâche unseal
+  ansible.builtin.import_tasks: unseal.yml

@@ -1,0 +1,28 @@
+---
+- name: Création de l'utilisateur système Vault
+  ansible.builtin.user:
+    name: vault
+    system: true
+    shell: /bin/false
+    home: /opt/vault
+    create_home: false
+
+- name: Création des dossiers Vault
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: vault
+    group: vault
+    mode: '0750'
+  loop:
+    - /etc/vault.d
+    - /opt/vault/data
+
+- name: Déploiement de la configuration Vault
+  ansible.builtin.template:
+    src: vault.hcl.j2
+    dest: /etc/vault.d/vault.hcl
+    owner: vault
+    group: vault
+    mode: '0640'
+  notify: restart vault
