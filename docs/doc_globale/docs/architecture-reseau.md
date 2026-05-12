@@ -117,4 +117,4 @@ Cette approche garantit :
 
 -   la scalabilité horizontale de l'infrastructure
 
-## Schéma réseau détaillé
+## Schéma réseau détaillé (LLD)
