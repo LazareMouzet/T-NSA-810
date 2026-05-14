@@ -69,8 +69,8 @@ L’utilisation d’une plage dédiée permet :
 
 | Machine | Rôle | Adresse IP |
 |---|---|---|
-| Bastion | Point de rebond SSH | 192.168.30.10 |
-| Intranet | Services utilisateurs | 192.168.20.10 |
+| Bastion | Point de rebond SSH | 192.168.20.10 |
+| Intranet | Services utilisateurs | 192.168.30.10 |
 | Monitoring | Centralisation des logs | 192.168.130.10 |
 | Outils | Visualisation des logs | 192.168.200.10 |
 
