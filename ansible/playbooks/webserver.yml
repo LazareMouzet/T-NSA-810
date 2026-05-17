@@ -1,0 +1,6 @@
+- name: Configure web server
+  hosts: intranet
+  become: true
+
+  roles:
+    - webserver
