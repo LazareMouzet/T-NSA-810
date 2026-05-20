@@ -3,7 +3,7 @@
 
 | Champ | Valeur |
 |---|---|
-| Projet | CIA — Cloud Infrastructure Architects |
+| Projet | CIA - T-NSA-810 |
 | Auteur | Salah-Wassim ARFA |
 | Établissement | Epitech |
 | Date | Mai 2026 |
@@ -50,7 +50,7 @@ Internet
    │       ├── bastion.local  (192.168.20.10)  — SSH Jump Host
    │       └── intranet.local (192.168.30.10)  — Application web
    │
-   └── pfSense Datacenter
+   └── pfSense Datacenter (5.39.122.42)
            ├── outils.local    (192.168.200.10) — NetBox + Vault
            └── monitoring.local (192.168.130.10) — Elasticsearch + Kibana
 ```
@@ -363,7 +363,7 @@ vault status
 
 ---
 
-### 3.6 NetBox — Accès et utilisation
+### 3.6 NetBox - Accès et utilisation
 
 #### Accès à l'interface web
 
@@ -393,7 +393,7 @@ sudo systemctl restart nginx
 
 ---
 
-### 3.7 Elasticsearch & Kibana — Accès et vérification
+### 3.7 Elasticsearch & Kibana - Accès et vérification
 
 #### Accès à Kibana
 
@@ -528,9 +528,9 @@ du -sh /var/log/elasticsearch/
 
 ### 5.1 Contacts
 
-| Rôle | Nom | Contact |
-|---|---|---|
-| Auteur / Admin infra | Salah-Wassim ARFA | — |
+| Rôle | Nom |
+|---|---|
+| Auteur / Admin infra | Salah-Wassim ARFA |
 
 ### 5.2 Ressources techniques
 
