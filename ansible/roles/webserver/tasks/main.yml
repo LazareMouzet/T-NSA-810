@@ -45,4 +45,3 @@
     path: /etc/nginx/sites-enabled/default
     state: absent
   notify: Reload nginx
-  
