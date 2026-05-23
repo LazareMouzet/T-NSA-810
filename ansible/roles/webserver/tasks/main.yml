@@ -1,6 +1,6 @@
 ---
 - name: Install web server
-  package:
+  ansible.builtin.package:
     name: "{{ webserver_package }}"
     state: present
 
@@ -12,7 +12,7 @@
   when: not ansible_check_mode
 
 - name: Create web root directory
-  file:
+  ansible.builtin.file:
     path: "{{ webserver_site_path }}"
     state: directory
     owner: www-data
@@ -20,7 +20,7 @@
     mode: '0755'
 
 - name: Deploy website files
-  copy:
+  ansible.builtin.copy:
     src: ../../../site/
     dest: "{{ webserver_site_path }}/"
     owner: www-data
@@ -28,20 +28,23 @@
     mode: '0644'
 
 - name: Deploy nginx virtual host
-  template:
+  ansible.builtin.template:
     src: site_remote.conf.j2
     dest: "/etc/nginx/sites-available/{{ webserver_site_name }}"
+    owner: root
+    group: root
+    mode: '0644'
   notify: Reload nginx
 
 - name: Enable website
-  file:
+  ansible.builtin.file:
     src: "/etc/nginx/sites-available/{{ webserver_site_name }}"
     dest: "/etc/nginx/sites-enabled/{{ webserver_site_name }}"
     state: link
   notify: Reload nginx
 
 - name: Remove default nginx site
-  file:
+  ansible.builtin.file:
     path: /etc/nginx/sites-enabled/default
     state: absent
   notify: Reload nginx
