@@ -1,8 +1,8 @@
 server {
-    listen 80;
-    server_name _;
+    listen {{ webserver_listen_port }};
+    server_name {{ webserver_server_name }};
 
-    root /var/www/site_remote;
+    root {{ webserver_site_path }};
     index index.html;
 
     location / {
