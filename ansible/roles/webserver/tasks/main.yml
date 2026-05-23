@@ -9,3 +9,40 @@
     state: started
     enabled: true
   when: not ansible_check_mode
+
+- name: Create web root directory
+  file:
+    path: /var/www/site_remote
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0755'
+
+- name: Deploy website files
+  copy:
+    src: ../../../site/
+    dest: /var/www/site_remote/
+    owner: www-data
+    group: www-data
+    mode: '0644'
+
+- name: Deploy nginx virtual host
+  template:
+    src: site_remote.conf.j2
+    dest: /etc/nginx/sites-available/site_remote
+
+- name: Enable website
+  file:
+    src: /etc/nginx/sites-available/site_remote
+    dest: /etc/nginx/sites-enabled/site_remote
+    state: link
+
+- name: Remove default nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Reload nginx
+  systemd:
+    name: nginx
+    state: reloaded
