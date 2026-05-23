@@ -1,3 +1,4 @@
+---
 - name: Install web server
   package:
     name: "{{ webserver_package }}"

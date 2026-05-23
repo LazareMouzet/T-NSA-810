@@ -1,3 +1,4 @@
+---
 webserver_package: nginx
 webserver_service: nginx
 webserver_site_name: site_remote
