@@ -12,7 +12,7 @@
 
 - name: Create web root directory
   file:
-    path: /var/www/site_remote
+    path: "{{ webserver_site_path }}"
     state: directory
     owner: www-data
     group: www-data
@@ -21,7 +21,7 @@
 - name: Deploy website files
   copy:
     src: ../../../site/
-    dest: /var/www/site_remote/
+    dest: "{{ webserver_site_path }}/"
     owner: www-data
     group: www-data
     mode: '0644'
@@ -29,20 +29,18 @@
 - name: Deploy nginx virtual host
   template:
     src: site_remote.conf.j2
-    dest: /etc/nginx/sites-available/site_remote
+    dest: "/etc/nginx/sites-available/{{ webserver_site_name }}"
+  notify: Reload nginx
 
 - name: Enable website
   file:
-    src: /etc/nginx/sites-available/site_remote
-    dest: /etc/nginx/sites-enabled/site_remote
+    src: "/etc/nginx/sites-available/{{ webserver_site_name }}"
+    dest: "/etc/nginx/sites-enabled/{{ webserver_site_name }}"
     state: link
+  notify: Reload nginx
 
 - name: Remove default nginx site
   file:
     path: /etc/nginx/sites-enabled/default
     state: absent
-
-- name: Reload nginx
-  systemd:
-    name: nginx
-    state: reloaded
+  notify: Reload nginx
