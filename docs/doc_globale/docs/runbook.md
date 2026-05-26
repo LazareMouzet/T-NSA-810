@@ -1,10 +1,9 @@
-# Runbook — Projet CIA
+# Runbook - Projet CIA
 ## Cloud Infrastructure Architects
 
 | Champ | Valeur |
 |---|---|
 | Projet | CIA - T-NSA-810 |
-| Auteur | Salah-Wassim ARFA |
 | Établissement | Epitech |
 | Date | Mai 2026 |
 | Version | 1.0 |
