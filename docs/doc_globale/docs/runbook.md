@@ -179,7 +179,7 @@ Ouvrir le tunnel dans un terminal WSL, puis accéder à l'URL dans le navigateur
 
 | Interface | Commande tunnel | URL |
 |---|---|---|
-| NetBox | `ssh -N outils` | `https://localhost:8443` |
+| NetBox | `ssh -L 8443:localhost:443 outils` | `https://localhost:8443` |
 | Kibana | `ssh -L 5601:localhost:5601 monitoring` | `http://localhost:5601` |
 | Vault | `ssh -L 8200:localhost:8200 outils` | `http://localhost:8200` |
 | pfSense Remote | `ssh -N pfsense-remote` | `http://localhost:8080` |
@@ -369,10 +369,10 @@ vault status
 
 ```bash
 # Ouvrir le tunnel SSH
-ssh -N outils -L 443:localhost:443
+ssh -L 8443:localhost:443 outils
 
 # Accéder dans le navigateur
-https://localhost
+https://localhost:8443
 ```
 
 #### Vérification de l'état de NetBox
@@ -462,9 +462,7 @@ sudo apt upgrade -y
 #### Connexion à Vault
 
 ```bash
-ssh outils
-export VAULT_ADDR="http://127.0.0.1:8200"
-export VAULT_TOKEN="<root_token>"
+ssh -L 8200:localhost:8200 outils
 ```
 
 #### Lister les secrets existants
