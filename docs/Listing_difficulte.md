@@ -154,7 +154,7 @@ Symptômes observés :
 
 #### Contexte technique
 - **Environnement** : dev
-- **Version** : pfSense (version à préciser) et OpenVPN (à préciser)
+- **Version** : pfSense 2.8.1, OpenVPN 2.6
 - **Technologies concernées** : OpenVPN 2.8.1, pfSense
 - **Configuration** : VPN S2S entre site remote et on-premise
 
@@ -204,7 +204,7 @@ Symptômes observés :
 
 #### Contexte technique
 - **Environnement** : dev
-- **Version** : pfSense 2.8.1, OpenVPN (version à préciser)
+- **Version** : pfSense 2.8.1, OpenVPN 2.6
 - **Technologies concernées** : OpenVPN, PfSense
 - **Configuration** : NAT Outbound
 
@@ -253,7 +253,7 @@ Symptômes observés :
 
 #### Contexte technique
 - **Environnement** : dev
-- **Version** : pfSense 2.8.1 et OpenVPN (version à préciser)
+- **Version** : pfSense 2.8.1 et OpenVPN 2.6
 - **Technologies concernées** : OpenVPN, PfSense
 - **Configuration** : Tunnel S2S entre site remote et site on-premise
 
@@ -421,7 +421,7 @@ Symptômes observés :
 - **Actions mises en place** :
   - Suppression de l'ancienne version du kernel non utilisés
   - Netoyage du cache système
-  - Suppression d'Elastocsearch
+  - Suppression d'Elasticsearch
   - Netoyage du journal de logs
 - **Coût (temps/ressources)** : 1 jours
 
