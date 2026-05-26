@@ -43,7 +43,7 @@ Ces règles permettent de contrôler les communications entre les différents so
 | Interface      | Source           | Destination     | Port     | Action | Description                           |
 | -------------- | ---------------- | --------------- | -------- | ------ | ------------------------------------- |
 | INTRANET   | INTRANET Subnets  | BASTION subnets | IPv4*   | BLOCK   | Isolation : l'intranet ne doit pas accéder au bastion |
-| INTRANET | 192.168.20.10 | INTRANET Subnets | 223 | PASS   | Autorise les connexions SSH via le port personnalisé 223 afin d’imposer le passage par le bastio |
+| INTRANET | 192.168.20.10 | INTRANET Subnets | 223 | PASS   | Autorise les connexions SSH via le port personnalisé 223 afin d’imposer le passage par le bastion |
 | INTRANET   | INTRANET Subnets  | WAN | * | PASS   | Autoriser l'intranet à acceder à internet |
 
 ### OpenVPN
