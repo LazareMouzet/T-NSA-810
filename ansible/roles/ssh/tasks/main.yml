@@ -1,0 +1,11 @@
+---
+- name: "Ajouter la clé SSH aux VMs"
+  ansible.posix.authorized_key:
+    user: "{{ inventory_hostname }}"
+    path: "/.ssh/authorized_keys"
+    state: present
+    key: "{{ item }}"
+  loop: "{{ team_ssh_keys }}"
+  tags:
+    - ssh
+    - add

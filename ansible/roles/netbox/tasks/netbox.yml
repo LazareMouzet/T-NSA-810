@@ -1,0 +1,13 @@
+---
+- name: Verify path exist
+  ansible.builtin.stat:
+    path: /opt/netbox/.git
+  register: netbox_git
+
+- name: Clone NetBox
+  ansible.builtin.git:
+    repo: https://github.com/netbox-community/netbox.git
+    dest: /opt/netbox
+    version: "{{ netbox_branch }}"
+    depth: 1
+  when: not netbox_git.stat.exists

@@ -1,0 +1,3 @@
+---
+netbox_cluster: "Proxmox-Datacenter"
+netbox_site: "Nantes-Datacenter"

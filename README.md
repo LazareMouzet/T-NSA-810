@@ -14,7 +14,7 @@
 - [Project Management](docs/project_management/project_management.md)
     - [Gantt](docs/project_management/gantt.md)
 ---
-## Lien vers la documentation du projet : 
+## Lien vers la documentation du projet :
 [https://LazareMouzet.github.io/T-NSA-810/](https://LazareMouzet.github.io/T-NSA-810/)
 ---
 

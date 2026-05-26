@@ -1,0 +1,51 @@
+---
+- name: Vérifier que les dossiers SSL existent
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - "{{ ssl_key_path | dirname }}"
+    - "{{ ssl_cert_path | dirname }}"
+
+- name: Génération du certificat SSL auto-signé
+  ansible.builtin.command:
+    cmd: >
+      openssl req -x509 -nodes -days {{ ssl_days }}
+      -newkey rsa:{{ ssl_key_size }}
+      -keyout {{ ssl_key_path }}
+      -out {{ ssl_cert_path }}
+      -subj "/C={{ ssl_country }}/ST={{ ssl_state }}/L={{ ssl_city }}/O={{ ssl_org }}/CN={{ netbox_allowed_host }}"
+    creates: "{{ ssl_cert_path }}"
+  notify: restart Nginx
+  check_mode: false
+
+- name: Définition des autorisations sécurisées pour la clé privée SSL
+  ansible.builtin.file:
+    path: "{{ ssl_key_path }}"
+    owner: root
+    group: root
+    mode: '0600'
+  notify: restart Nginx
+
+- name: Déploiement de la configuration Nginx NetBox
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/netbox
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart Nginx
+
+- name: Activation du site NetBox
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/netbox
+    dest: /etc/nginx/sites-enabled/netbox
+    state: link
+  notify: restart Nginx
+
+- name: Suppression du site Nginx par défaut
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart Nginx

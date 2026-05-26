@@ -1,0 +1,5 @@
+---
+netbox_cluster: "Proxmox-Remote"
+netbox_site: "Nantes-Remote"
+proxmox_auth_header: >
+  PVEAPIToken={{ vault_proxmox_api_user_dc1 }}!{{ vault_proxmox_api_token_id_dc1 }}={{ vault_proxmox_api_token_secret_dc1 }}
