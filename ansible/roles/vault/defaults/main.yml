@@ -1,0 +1,62 @@
+---
+vault_addr: "http://127.0.0.1:8200"
+vault_kv_mount_path: "secret"
+vault_migrate_bootstrap_secrets: false
+
+vault_secret_migration_items:
+  - path: infra/ansible/access
+    data:
+      vault_become_host_outils: "{{ vault_become_host_outils }}"
+      vault_become_user_outils: "{{ vault_become_user_outils }}"
+      vault_become_port_outils: "{{ vault_become_port_outils }}"
+      vault_become_password_outils: "{{ vault_become_password_outils }}"
+      vault_become_host_monitoring: "{{ vault_become_host_monitoring }}"
+      vault_become_user_monitoring: "{{ vault_become_user_monitoring }}"
+      vault_become_port_monitoring: "{{ vault_become_port_monitoring }}"
+      vault_become_password_monitoring: "{{ vault_become_password_monitoring }}"
+      vault_become_host_bastion: "{{ vault_become_host_bastion }}"
+      vault_become_user_bastion: "{{ vault_become_user_bastion }}"
+      vault_become_port_bastion: "{{ vault_become_port_bastion }}"
+      vault_become_password_bastion: "{{ vault_become_password_bastion }}"
+      vault_become_host_intranet: "{{ vault_become_host_intranet }}"
+      vault_become_user_intranet: "{{ vault_become_user_intranet }}"
+      vault_become_port_intranet: "{{ vault_become_port_intranet }}"
+      vault_become_password_intranet: "{{ vault_become_password_intranet }}"
+      path_ssh: "{{ path_ssh }}"
+
+  - path: infra/proxmox/api
+    data:
+      vault_proxmox_api_host_dc1: "{{ vault_proxmox_api_host_dc1 }}"
+      vault_proxmox_api_user_dc1: "{{ vault_proxmox_api_user_dc1 }}"
+      vault_proxmox_api_token_id_dc1: "{{ vault_proxmox_api_token_id_dc1 }}"
+      vault_proxmox_api_token_secret_dc1: "{{ vault_proxmox_api_token_secret_dc1 }}"
+
+  - path: services/netbox/app
+    data:
+      netbox_db_user_password: "{{ netbox_db_user_password }}"
+      netbox_superuser_password: "{{ netbox_superuser_password }}"
+      netbox_secret_key: "{{ netbox_secret_key }}"
+      netbox_token_api: "{{ netbox_token_api }}"
+
+  - path: services/elasticsearch/app
+    data:
+      elastic_password: "{{ elastic_password }}"
+      kibana_service_account_token: "{{ kibana_service_account_token }}"
+
+vault_bootstrap_secret_item:
+  path: services/vault/bootstrap
+  data:
+    vault_unseal_key: "{{ vault_unseal_key }}"
+    vault_root_token: "{{ vault_root_token }}"
+
+vault_audit_to_elasticsearch_enabled: true
+vault_audit_device_name: "file"
+vault_audit_log_path: "/var/log/vault/audit.log"
+vault_audit_log_raw: false
+
+vault_filebeat_elasticsearch_scheme: "http"
+vault_filebeat_elasticsearch_host: "{{ vault_become_host_monitoring | default('127.0.0.1') }}"
+vault_filebeat_elasticsearch_port: 9200
+vault_filebeat_elasticsearch_username: "elastic"
+vault_filebeat_elasticsearch_password: "{{ elastic_password }}"
+vault_filebeat_index_prefix: "vault-audit"

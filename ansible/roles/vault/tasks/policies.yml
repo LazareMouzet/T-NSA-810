@@ -1,0 +1,52 @@
+---
+- name: Gestion des policies Vault
+  vars:
+    vault_default_policies:
+      - name: admin
+        template: policies/admin.hcl.j2
+      - name: ansible-read
+        template: policies/ansible-read.hcl.j2
+      - name: netbox-read
+        template: policies/netbox-read.hcl.j2
+    vault_policy_definitions: "{{ vault_policies | default(vault_default_policies) }}"
+  block:
+    - name: Création du dossier des policies Vault
+      ansible.builtin.file:
+        path: /etc/vault.d/policies
+        state: directory
+        owner: vault
+        group: vault
+        mode: '0750'
+
+    - name: Vérifier la présence d'un token de gestion des policies Vault
+      ansible.builtin.assert:
+        that:
+          - vault_policy_token | default(vault_root_token | default('')) | length > 0
+        fail_msg: >-
+          Définissez vault_policy_token (ou vault_root_token) dans
+          inventory/group_vars/all/vault.yml avant d'appliquer les policies.
+      no_log: true
+
+    - name: Déployer les templates des policies Vault
+      ansible.builtin.template:
+        src: "{{ item.template }}"
+        dest: "/etc/vault.d/policies/{{ item.name }}.hcl"
+        owner: vault
+        group: vault
+        mode: '0640'
+      loop: "{{ vault_policy_definitions }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Appliquer les policies Vault
+      ansible.builtin.command:
+        cmd: "vault policy write {{ item.name }} /etc/vault.d/policies/{{ item.name }}.hcl"
+      environment:
+        VAULT_ADDR: "{{ vault_addr | default('http://127.0.0.1:8200') }}"
+        VAULT_TOKEN: "{{ vault_policy_token | default(vault_root_token) }}"
+      loop: "{{ vault_policy_definitions }}"
+      loop_control:
+        label: "{{ item.name }}"
+      no_log: true
+      changed_when: false
+      when: not ansible_check_mode

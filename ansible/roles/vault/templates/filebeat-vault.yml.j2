@@ -1,0 +1,36 @@
+filebeat.inputs:
+  - type: filestream
+    id: vault-audit
+    enabled: true
+    paths:
+      - "{{ vault_audit_log_path }}"
+    parsers:
+      - ndjson:
+          target: ""
+          add_error_key: true
+    fields:
+      service: vault
+      log_source: audit
+    fields_under_root: true
+
+filebeat.config.inputs:
+  enabled: true
+  path: /etc/filebeat/inputs.d/*.yml
+  reload.enabled: false
+
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_cloud_metadata: ~
+
+output.elasticsearch:
+  hosts:
+    - "{{ vault_filebeat_elasticsearch_scheme }}://{{ vault_filebeat_elasticsearch_host }}:{{ vault_filebeat_elasticsearch_port }}"
+  username: "{{ vault_filebeat_elasticsearch_username }}"
+  password: "{{ vault_filebeat_elasticsearch_password }}"
+  index: "{{ vault_filebeat_index_prefix }}-%{+yyyy.MM.dd}"
+
+setup.ilm.enabled: false
+setup.template.enabled: true
+setup.template.name: "{{ vault_filebeat_index_prefix }}"
+setup.template.pattern: "{{ vault_filebeat_index_prefix }}-*"

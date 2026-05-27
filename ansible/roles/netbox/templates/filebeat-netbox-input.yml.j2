@@ -1,0 +1,23 @@
+- type: journald
+  id: netbox-services
+  seek: tail
+  units:
+{% for unit in netbox_filebeat_journald_units %}
+    - "{{ unit }}"
+{% endfor %}
+  fields:
+    service: netbox
+    log_source: journald
+  fields_under_root: true
+
+- type: filestream
+  id: netbox-nginx
+  enabled: true
+  paths:
+{% for path in netbox_filebeat_nginx_log_paths %}
+    - "{{ path }}"
+{% endfor %}
+  fields:
+    service: netbox
+    log_source: nginx
+  fields_under_root: true

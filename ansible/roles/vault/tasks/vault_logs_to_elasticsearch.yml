@@ -1,0 +1,127 @@
+---
+- name: Configuration des logs Vault vers Elasticsearch
+  vars:
+    vault_audit_management_token: >-
+      {{
+        vault_audit_token
+        | default(vault_migration_token
+        | default(vault_policy_token
+        | default(vault_root_token | default(''))))
+      }}
+    vault_audit_device_key: "{{ vault_audit_device_name ~ '/' }}"
+  when: vault_audit_to_elasticsearch_enabled | bool
+  block:
+    - name: Vérifier la présence d'un token de gestion Vault
+      ansible.builtin.assert:
+        that:
+          - vault_audit_management_token | length > 0
+        fail_msg: >-
+          Définissez vault_audit_token (ou vault_migration_token /
+          vault_policy_token / vault_root_token) dans
+          inventory/group_vars/all/vault.yml avant de configurer les logs Vault.
+      no_log: true
+
+    - name: Créer le dossier de logs Vault
+      ansible.builtin.file:
+        path: "{{ vault_audit_log_path | dirname }}"
+        state: directory
+        owner: vault
+        group: vault
+        mode: '0750'
+
+    - name: Créer le fichier de log d'audit Vault
+      ansible.builtin.file:
+        path: "{{ vault_audit_log_path }}"
+        state: touch
+        owner: vault
+        group: vault
+        mode: '0640'
+        access_time: preserve
+        modification_time: preserve
+
+    - name: Récupérer les devices d'audit Vault
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/sys/audit"
+        method: GET
+        headers:
+          X-Vault-Token: "{{ vault_audit_management_token }}"
+        return_content: true
+        status_code: 200
+      register: vault_audit_devices
+      no_log: true
+
+    - name: Activer l'audit device fichier pour Vault
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/sys/audit/{{ vault_audit_device_name }}"
+        method: POST
+        headers:
+          X-Vault-Token: "{{ vault_audit_management_token }}"
+        body_format: json
+        body:
+          type: file
+          options:
+            file_path: "{{ vault_audit_log_path }}"
+            log_raw: "{{ vault_audit_log_raw | ternary('true', 'false') }}"
+        status_code:
+          - 200
+          - 204
+      when:
+        - vault_audit_device_key not in vault_audit_devices.json
+        - not ansible_check_mode
+      no_log: true
+
+    - name: Installer dépendances Filebeat
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - gnupg
+        state: present
+        update_cache: true
+
+    - name: Vérifier la présence de la keyring Elastic
+      ansible.builtin.stat:
+        path: /usr/share/keyrings/elasticsearch-keyring.gpg
+      register: vault_filebeat_elastic_keyring
+
+    - name: Télécharger la clé GPG Elastic
+      ansible.builtin.get_url:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        dest: /tmp/GPG-KEY-elasticsearch
+        mode: '0644'
+      when: not vault_filebeat_elastic_keyring.stat.exists
+
+    - name: Convertir la clé Elastic au format keyring
+      ansible.builtin.command:
+        cmd: gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg /tmp/GPG-KEY-elasticsearch
+        creates: /usr/share/keyrings/elasticsearch-keyring.gpg
+      when: not vault_filebeat_elastic_keyring.stat.exists
+
+    - name: Ajouter le repository Elastic
+      ansible.builtin.apt_repository:
+        repo: >-
+          deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg]
+          https://artifacts.elastic.co/packages/8.x/apt stable main
+        filename: elastic-8.x
+        state: present
+
+    - name: Installer Filebeat
+      ansible.builtin.apt:
+        name: filebeat
+        state: present
+        update_cache: true
+
+    - name: Déployer la configuration Filebeat Vault
+      ansible.builtin.template:
+        src: filebeat-vault.yml.j2
+        dest: /etc/filebeat/filebeat.yml
+        owner: root
+        group: root
+        mode: '0600'
+      notify: Restart filebeat
+      no_log: true
+
+    - name: Activer et démarrer Filebeat
+      ansible.builtin.systemd:
+        name: filebeat
+        enabled: true
+        state: started

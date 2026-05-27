@@ -7,3 +7,9 @@
   ansible.builtin.import_tasks: service.yml
 - name: Import de la tâche unseal
   ansible.builtin.import_tasks: unseal.yml
+- name: Import de la tâche policies
+  ansible.builtin.import_tasks: policies.yml
+- name: Import de la tâche migrate secrets
+  ansible.builtin.import_tasks: migrate_secrets.yml
+- name: Import de la tâche vault logs to elasticsearch
+  ansible.builtin.import_tasks: vault_logs_to_elasticsearch.yml
