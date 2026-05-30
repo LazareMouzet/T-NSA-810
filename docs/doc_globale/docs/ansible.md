@@ -71,7 +71,8 @@ ansible --version
 │   |── netbox.yml             ← Playbook du rôle netbox
 │   ├── proxmox.yml            ← Playbook du rôle proxmox
 │   ├── vault.yml              ← Playbook du rôle vault
-│   └── vm_ip_to_netbox.yml    ← Playbook du rôle vm_ip_to_netbox.yml
+│   |── vm_ip_to_netbox.yml    ← Playbook du rôle vm_ip_to_netbox.yml
+|   └── webserver.yml          ← Playbook du rôle webserver.yml
 │
 ├── roles/
 │   └── [nom-du-role]/
