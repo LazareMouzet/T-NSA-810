@@ -208,6 +208,48 @@ sans devoir désactiver les mesures de confinement.
 - accès distant potentiellement indisponible durant l’incident
 - nécessite un accès administrateur pfSense
 
+## Procédure de reprise après incident
+
+La reprise doit être menée de manière contrôlée afin de restaurer l’infrastructure sans réintroduire la cause de l’incident.
+
+### 1. Maintenir l’isolement
+
+- conserver les règles Kill Switch actives tant que l’incident n’est pas traité
+- vérifier que le VPN Site-to-Site reste isolé
+- utiliser le VPN Point-to-Site pour les opérations d’administration
+
+### 2. Analyser et qualifier l’incident
+
+- consulter les journaux depuis le bastion
+- identifier les services, VMs ou réseaux impactés
+- déterminer si une restauration par snapshot est suffisante ou si un redéploiement est nécessaire
+
+### 3. Restaurer l’infrastructure
+
+La restauration suit l’ordre de priorité suivant :
+
+1. restaurer les machines virtuelles depuis un snapshot Proxmox si un état sain existe
+2. sinon, redéployer la VM sur une base vierge fournie par le prestataire
+3. relancer les playbooks Ansible pour reconstituer la configuration système et applicative
+4. réappliquer les paramètres spécifiques documentés dans le dépôt Git et les sauvegardes associées
+
+Cette approche permet de reconstruire l’environnement de manière reproductible à partir d’éléments versionnés et automatisés.
+
+### 4. Valider la reprise
+
+- vérifier l’état des services locaux
+- contrôler l’accès au bastion via le VPN Point-to-Site
+- tester les flux nécessaires entre les composants restaurés
+- confirmer que les règles de confinement peuvent rester actives pendant la phase de validation
+
+### 5. Réouvrir les communications
+
+Une fois la restauration validée :
+
+- désactiver progressivement les règles Kill Switch
+- réactiver les communications VPN inter-sites
+- surveiller les journaux et le comportement réseau après réouverture
+
 ## Conclusion
 
 Cette stratégie de Kill Switch permet une isolation rapide et contrôlée du site distant tout en garantissant la possibilité de reprise des services après remédiation.
