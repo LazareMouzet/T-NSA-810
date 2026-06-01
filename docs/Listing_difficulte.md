@@ -129,7 +129,7 @@ Symptômes observés :
 
 ---
 
-### [ID-003] - Tunnel OpenVPN S2S mais ping LAN impossible dans les deux sens
+### [ID-003] - Tunnel OpenVPN S2S - ping LAN impossible dans les deux sens
 **Date de détection** : 18/02/2026  
 **Statut** : 🟢 Résolu  
 **État** : ✅ Résolu  
@@ -154,8 +154,8 @@ Symptômes observés :
 
 #### Contexte technique
 - **Environnement** : dev
-- **Version** : pfSense (version à préciser) et OpenVPN (à préciser)
-- **Technologies concernées** : OpenVPN, pfSense
+- **Version** : pfSense 2.8.1, OpenVPN 2.6
+- **Technologies concernées** : OpenVPN 2.8.1, pfSense
 - **Configuration** : VPN S2S entre site remote et on-premise
 
 #### Tentatives de résolution
@@ -204,7 +204,7 @@ Symptômes observés :
 
 #### Contexte technique
 - **Environnement** : dev
-- **Version** : pfSense (version à préciser), OpenVPN (version à préciser)
+- **Version** : pfSense 2.8.1, OpenVPN 2.6
 - **Technologies concernées** : OpenVPN, PfSense
 - **Configuration** : NAT Outbound
 
@@ -253,7 +253,7 @@ Symptômes observés :
 
 #### Contexte technique
 - **Environnement** : dev
-- **Version** : pfSense (version à préciser) et OpenVPN (version à préciser)
+- **Version** : pfSense 2.8.1 et OpenVPN 2.6
 - **Technologies concernées** : OpenVPN, PfSense
 - **Configuration** : Tunnel S2S entre site remote et site on-premise
 
@@ -303,7 +303,7 @@ Symptômes observés :
 
 #### Contexte technique
 - **Environnement** : dev
-- **Version** : pfSense/OpenVPN (versions à préciser)
+- **Version** : pfSense 2.8.1 ; OpenVPN 2.6
 - **Technologies concernées** : OpenVPN et PfSense
 - **Configuration** : S2S avec authentification par certificats
 
@@ -330,7 +330,7 @@ Symptômes observés :
 
 ---
 
-### [ID-003.4] - `ERROR: FreeBSD route add command failed`
+### [ID-003.4] - `ERROR: FreeBSD route add command failed - DCO (Data Channel Offload)`
 **Date de détection** : 22/02/2026  
 **Statut** : 🟢 Résolu  
 **État** : ✅ Résolu  
@@ -338,24 +338,25 @@ Symptômes observés :
 **Personnes impliquées** : @Salah
 
 #### Description
-Une erreur `route add command failed` apparaissait lors de l'établissement du tunnel OpenVPN.
+Une erreur `ERROR: FreeBSD route add command failed: ` apparaissait lors de l'établissement du tunnel OpenVPN.
 
 **Cause identifiée** : Route statique manuelle en doublon avec la route poussée automatiquement par OpenVPN.
 
 Symptômes observés :
 - Message d'erreur `ERROR: FreeBSD route add command failed`
+- Le tunnel fonctionne pour les IPs tunnel mais bloque le trafic LAN routé
 
 #### Impact
 - **Impact sur le planning** : RAS
-- **Impact sur les fonctionnalités** : Routage non fiable, flux potentiellement non acheminés
+- **Impact sur les fonctionnalités** : Impossible pour les LANs des deux sites de communiquer entre eux
 - **Impact sur l'équipe** : RAS
-- **Risques associés** : Conflits de routes
+- **Risques associés** : RAS
 
 #### Contexte technique
 - **Environnement** : dev
-- **Version** : pfSense et OpenVPN (versions à préciser)
+- **Version** : pfSense 2.8.1 et OpenVPN 2.6
 - **Technologies concernées** : OpenVPN et pfSense
-- **Configuration** : Route ajoutée manuellement + route dynamique OpenVPN
+- **Configuration** : S2S
 
 #### Tentatives de résolution
 1. **Date** : 22/02/2026 - Analyse des logs OpenVPN
@@ -363,11 +364,10 @@ Symptômes observés :
 
 #### Solution finale
 - **Date de résolution** : 22/02/2026
-- **Description de la solution** : Suppression de la route statique manuelle redondante dans `System > Routing > Static Routes`.
+- **Description de la solution** : Désactivation du DCO dans `VPN > OpenVPN > Client Specific Overrides`.
 - **Actions mises en place** :
-  - Identifier la route en doublon
-  - Supprimer l'entrée manuelle conflictuelle
-  - Redémarrer le service OpenVPN et vérifier l'absence d'erreur
+  - Désactivation du DCO
+  - Ajout de la règle : iroute 192.168.10.0 255.255.255.0 dans `VPN > OpenVPN > Client Specific Overrides`.
 - **Coût (temps/ressources)** : 4 jours[^vpn-cost-total]
 
 #### Leçons apprises
@@ -382,6 +382,58 @@ Symptômes observés :
 
 ---
 
+### [ID-004] - `ERROR I/O - VM1001`
+**Date de détection** : Inconnue  
+**Statut** : 🟢 Résolu  
+**État** : ✅ Résolu  
+**Module/Composant concerné** : Proxmox
+**Personnes impliquées** : @Salah
+
+#### Description
+Une erreur `ERROR: I/O` apparaissait sur la VM1001, ce qui causait une indisponibilité des fonctionnalités standart (arrêt, restrat).
+
+**Cause identifiée** : Une saturation du stockage LVM, due à l'installation d'elasticsearch et Kibana.
+
+Symptômes observés :
+- Message d'erreur `ERROR: I/O`
+- VM instable avec des freeze fréquents
+
+#### Impact
+- **Impact sur le planning** : Retard sur le POC Elasticsearch
+- **Impact sur les fonctionnalités** : Equipement indisponible et instable
+- **Impact sur l'équipe** : Impossibilité d'effectué des opérations sur la VM1001
+- **Risques associés** : Corruption partielle du système de fichiers, blocage des services critiques, perte de données lors d’un arrêt forcé
+
+#### Contexte technique
+- **Environnement** : dev
+- **Version** : Proxmox , Ubuntu Server Minimal
+- **Technologies concernées** : Proxmox , Ubuntu Server
+- **Configuration** : S2S
+
+#### Tentatives de résolution
+1. **Date** : / - Analyse du stockage LVM
+2. **Date** : / - Analyse des journaux de logs systèmes
+3. **Date** : / - Réinstallation d'Ubuntu Server en passant sur Ubuntu Server Minimal
+
+#### Solution finale
+- **Date de résolution** : Inconnue
+- **Description de la solution** : Nettoyage en profondeur de la VM
+- **Actions mises en place** :
+  - Suppression de l'ancienne version du kernel non utilisés
+  - Netoyage du cache système
+  - Suppression d'Elasticsearch
+  - Netoyage du journal de logs
+- **Coût (temps/ressources)** : 1 jours
+
+#### Leçons apprises
+- Réduire la capacité d'écriture dans la configuration d'Elasticsearch lors de son installation
+
+#### Références
+- Promox
+- Ubuntu Server
+
+---
+
 ## Classification par Catégorie
 
 ### Infrastructure & DevOps
@@ -392,6 +444,8 @@ Symptômes observés :
 - [ID-003.2] - Virtual Address tunnel invalide (`10.10.10.0/24`)
 - [ID-003.3] - `iroute` non appliqué (certificat CN non distinct)
 - [ID-003.4] - `route add command failed` (route statique en doublon)
+- [ID-004] - `ERROR: I/O` - VM1001
+
 ---
 
 ## Statistiques
