@@ -176,8 +176,7 @@ sudo systemctl status <nom_service>
 **Diagnostic :**
 
 ```bash
-ssh outils
-export VAULT_ADDR="http://127.0.0.1:8200"
+ssh -L 8200:localhost:8200 outils
 vault status
 ```
 
