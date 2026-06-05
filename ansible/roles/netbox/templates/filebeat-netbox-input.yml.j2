@@ -1,13 +1,17 @@
-- type: journald
+- type: filestream
   id: netbox-services
-  seek: tail
-  units:
-{% for unit in netbox_filebeat_journald_units %}
-    - "{{ unit }}"
+  enabled: true
+  paths:
+{% for path in netbox_filebeat_service_log_paths %}
+    - "{{ path }}"
+{% endfor %}
+  include_lines:
+{% for pattern in netbox_filebeat_service_include_lines %}
+    - "{{ pattern }}"
 {% endfor %}
   fields:
     service: netbox
-    log_source: journald
+    log_source: service
   fields_under_root: true
 
 - type: filestream

@@ -11,6 +11,20 @@
     vault_audit_device_key: "{{ vault_audit_device_name ~ '/' }}"
   when: vault_audit_to_elasticsearch_enabled | bool
   block:
+    - name: Vérifier les variables requises pour les logs Vault
+      ansible.builtin.assert:
+        that:
+          - vault_addr | length > 0
+          - vault_audit_log_path | length > 0
+          - vault_filebeat_elasticsearch_scheme | length > 0
+          - vault_filebeat_elasticsearch_host | length > 0
+          - vault_filebeat_elasticsearch_port | string | length > 0
+          - vault_filebeat_elasticsearch_username | length > 0
+          - vault_filebeat_elasticsearch_password | length > 0
+        fail_msg: >-
+          Définissez les variables runtime Vault/Elasticsearch dans
+          inventory/group_vars/all/vault.yml avant de configurer les logs Vault.
+      no_log: true
     - name: Vérifier la présence d'un token de gestion Vault
       ansible.builtin.assert:
         that:
@@ -46,8 +60,19 @@
         headers:
           X-Vault-Token: "{{ vault_audit_management_token }}"
         return_content: true
-        status_code: 200
+        status_code:
+          - 200
+          - 403
       register: vault_audit_devices
+      no_log: true
+
+    - name: Vérifier les droits du token de gestion Vault sur sys/audit
+      ansible.builtin.assert:
+        that:
+          - vault_audit_devices.status == 200
+        fail_msg: >-
+          Le token utilisé pour la gestion des logs Vault n'a pas les droits
+          requis sur /v1/sys/audit (status={{ vault_audit_devices.status }}).
       no_log: true
 
     - name: Activer l'audit device fichier pour Vault
@@ -65,6 +90,20 @@
         status_code:
           - 200
           - 204
+          - 403
+      when:
+        - vault_audit_device_key not in vault_audit_devices.json
+        - not ansible_check_mode
+      no_log: true
+      register: vault_enable_audit_device
+
+    - name: Vérifier les droits du token pour activer le device d'audit
+      ansible.builtin.assert:
+        that:
+          - vault_enable_audit_device.status != 403
+        fail_msg: >-
+          Le token utilisé n'a pas les droits pour activer le device
+          d'audit Vault '{{ vault_audit_device_name }}'.
       when:
         - vault_audit_device_key not in vault_audit_devices.json
         - not ansible_check_mode
@@ -96,6 +135,12 @@
         creates: /usr/share/keyrings/elasticsearch-keyring.gpg
       when: not vault_filebeat_elastic_keyring.stat.exists
 
+    - name: Supprimer la clé GPG Elastic temporaire
+      ansible.builtin.file:
+        path: /tmp/GPG-KEY-elasticsearch
+        state: absent
+      when: not vault_filebeat_elastic_keyring.stat.exists
+
     - name: Ajouter le repository Elastic
       ansible.builtin.apt_repository:
         repo: >-
@@ -109,6 +154,11 @@
         name: filebeat
         state: present
         update_cache: true
+
+    - name: Geler la version de Filebeat
+      ansible.builtin.dpkg_selections:
+        name: filebeat
+        selection: hold
 
     - name: Déployer la configuration Filebeat Vault
       ansible.builtin.template:

@@ -28,6 +28,12 @@
         creates: /usr/share/keyrings/elasticsearch-keyring.gpg
       when: not netbox_filebeat_elastic_keyring.stat.exists
 
+    - name: Supprimer la clé GPG Elastic temporaire
+      ansible.builtin.file:
+        path: /tmp/GPG-KEY-elasticsearch
+        state: absent
+      when: not netbox_filebeat_elastic_keyring.stat.exists
+
     - name: Ajouter le repository Elastic
       ansible.builtin.apt_repository:
         repo: >-
@@ -41,6 +47,11 @@
         name: filebeat
         state: present
         update_cache: true
+
+    - name: Geler la version de Filebeat
+      ansible.builtin.dpkg_selections:
+        name: filebeat
+        selection: hold
 
     - name: Créer le dossier Filebeat inputs.d
       ansible.builtin.file:

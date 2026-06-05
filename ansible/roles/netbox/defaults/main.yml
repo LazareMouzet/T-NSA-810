@@ -1,9 +1,12 @@
 ---
 netbox_logs_to_elasticsearch_enabled: true
+netbox_filebeat_service_log_paths:
+  - /var/log/syslog
+  - /var/log/messages
 
-netbox_filebeat_journald_units:
-  - netbox.service
-  - netbox-rq.service
+netbox_filebeat_service_include_lines:
+  - "netbox"
+  - "netbox-rq"
 
 netbox_filebeat_nginx_log_paths:
   - /var/log/nginx/access.log
