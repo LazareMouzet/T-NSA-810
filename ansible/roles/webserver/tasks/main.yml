@@ -42,4 +42,3 @@
     dest: "/etc/nginx/sites-enabled/{{ webserver_site_name }}"
     state: link
   notify: Reload nginx
-
