@@ -9,23 +9,23 @@
     name: "{{ webserver_service }}"
     state: started
     enabled: true
-  when: not ansible_check_mode
 
 - name: Create web root directory
   ansible.builtin.file:
     path: "{{ webserver_site_path }}"
     state: directory
-    owner: www-data
-    group: www-data
+    owner: root
+    group: root
     mode: '0755'
 
 - name: Deploy website files
   ansible.builtin.copy:
-    src: ../../../site/
+    src: site/
     dest: "{{ webserver_site_path }}/"
-    owner: www-data
-    group: www-data
+    owner: root
+    group: root
     mode: '0644'
+    directory_mode: '0755'
 
 - name: Deploy nginx virtual host
   ansible.builtin.template:
@@ -43,8 +43,3 @@
     state: link
   notify: Reload nginx
 
-- name: Remove default nginx site
-  ansible.builtin.file:
-    path: /etc/nginx/sites-enabled/default
-    state: absent
-  notify: Reload nginx
