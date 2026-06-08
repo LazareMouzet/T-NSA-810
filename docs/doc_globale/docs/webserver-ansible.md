@@ -221,7 +221,7 @@ Résultat :
 
 - le fichier `index.html` est présent
 - le dossier `css/` est correctement déployé
-- les permissions sont conformes (`www-data:www-data`)
+- les permissions sont conformes (`root:root`)
 - les droits sont standards (644 pour les fichiers, 755 pour les dossiers)
 
 ---
