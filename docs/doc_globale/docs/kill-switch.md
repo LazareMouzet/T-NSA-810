@@ -2,19 +2,22 @@
 
 ## Objectif
 
-Mettre en place une procédure d’arrêt d’urgence (“Kill Switch”) permettant d’isoler rapidement les communications inter-sites et l’infrastructure distante en cas :
+Le Kill Switch est une procédure d’arrêt d’urgence destinée à couper rapidement les communications entre les sites et à contenir un incident de sécurité sans détruire l’infrastructure existante.
 
-- d’intrusion
-- de compromission
-- d’activité réseau suspecte
-- d’incident de sécurité critique
+Il est activé lorsqu’un événement critique rend le réseau potentiellement non fiable, par exemple :
 
-La stratégie doit :
+- intrusion détectée
+- compromission d’un équipement ou d’un compte
+- activité réseau suspecte
+- incident majeur nécessitant un confinement immédiat
 
-- limiter la propagation d’un incident
-- préserver les capacités de restauration
-- éviter la destruction de l’infrastructure
-- permettre une reprise contrôlée des services
+Son objectif est de :
+
+- limiter la propagation de l’incident
+- préserver les services et la configuration nécessaires à la remédiation
+- maintenir une capacité de reprise contrôlée après l’isolement
+
+En pratique, le Kill Switch doit permettre d’isoler les flux inter-sites tout en conservant un accès d’administration d’urgence pour diagnostiquer et corriger la situation.
 
 ## Principe de fonctionnement
 
@@ -59,7 +62,7 @@ Firewall → Rules → OpenVPN
 
 #### Objectif
 
-Empêcher tout accès provenant du site Datacenter vers le VLAN Intranet du site Remote.
+Empêcher tout accès provenant du site Datacenter vers le VLAN Intranet du site Remote et isoler rapidement les deux environnements via les règles firewall OpenVPN.
 
 ### Site Datacenter
 
@@ -136,30 +139,7 @@ Les règles peuvent être activées manuellement depuis pfSense :
 
 ## Accès d’administration après activation du Kill Switch
 
-L’activation du Kill Switch bloque les communications inter-sites transitant par le tunnel VPN Site-to-Site OpenVPN.
-
-Cette isolation empêche notamment :
-
-- les communications entre les VLANs des deux sites
-- les accès applicatifs inter-sites
-- les mouvements latéraux potentiels en cas de compromission
-
-Afin d’éviter toute perte totale d’administration de l’infrastructure, un accès séparé est prévu via un VPN Point-to-Site (P2S).
-
-### Rôle du VPN Point-to-Site
-
-Le VPN Point-to-Site permet :
-
-- aux administrateurs de se connecter directement au réseau d’administration
-- de conserver un accès au bastion même lorsque le VPN Site-to-Site est isolé
-- d’assurer les opérations de remédiation et de restauration
-
-Cette séparation permet de distinguer :
-
-- les flux d’administration
-- les flux inter-sites de production
-
-### Fonctionnement en cas d’incident
+L’activation du Kill Switch bloque les communications inter-sites transitant par le tunnel VPN Site-to-Site OpenVPN et réduit les possibilités de mouvement latéral en cas de compromission.
 
 #### Avant activation du Kill Switch
 
@@ -176,31 +156,22 @@ Datacenter ↔ Remote : bloqué
 VPN Site-to-Site : isolé
 VPN Point-to-Site : toujours accessible
 ```
-L’administration d’urgence reste possible même après activation du Kill Switch grâce au VPN Point-to-Site.
-Les administrateurs peuvent ainsi :
+L’administration d’urgence reste possible grâce au VPN Point-to-Site, ce qui permet de :
 
 - accéder au bastion
 - analyser les logs
 - corriger l’incident
 - rétablir les communications
 
-sans devoir désactiver les mesures de confinement.
+sans désactiver les mesures de confinement.
 
 ## Avantages
 
 - confinement rapide d’un incident
-- limitation des impacts réseau
-- conservation de l’infrastructure
-- restauration rapide possible
-- procédure simple et reproductible
-- isolation rapide et réversible
-- limitation des mouvements latéraux
-- réduction de l’impact d’un incident
+- conservation de l’infrastructure et des services utiles à la remédiation
+- restauration rapide et réversible
 - maintien d’un accès d’urgence sécurisé
-- évite l’auto-verrouillage administratif
-- améliore les capacités de remédiation
-- meilleure séparation des usages réseau
-- architecture plus résiliente
+- procédure simple, reproductible et adaptée au contexte de crise
 
 ## Limites
 
@@ -208,57 +179,6 @@ sans devoir désactiver les mesures de confinement.
 - accès distant potentiellement indisponible durant l’incident
 - nécessite un accès administrateur pfSense
 
-## Procédure de reprise après incident
-
-La reprise doit être menée de manière contrôlée afin de restaurer l’infrastructure sans réintroduire la cause de l’incident.
-
-### 1. Maintenir l’isolement
-
-- conserver les règles Kill Switch actives tant que l’incident n’est pas traité
-- vérifier que le VPN Site-to-Site reste isolé
-- utiliser le VPN Point-to-Site pour les opérations d’administration
-
-### 2. Analyser et qualifier l’incident
-
-- consulter les journaux depuis le bastion
-- identifier les services, VMs ou réseaux impactés
-- déterminer si une restauration par snapshot est suffisante ou si un redéploiement est nécessaire
-
-### 3. Restaurer l’infrastructure
-
-La restauration suit l’ordre de priorité suivant :
-
-1. restaurer les machines virtuelles depuis un snapshot Proxmox si un état sain existe
-2. sinon, redéployer la VM sur une base vierge fournie par le prestataire
-3. relancer les playbooks Ansible pour reconstituer la configuration système et applicative
-4. réappliquer les paramètres spécifiques documentés dans le dépôt Git et les sauvegardes associées
-
-Cette approche permet de reconstruire l’environnement de manière reproductible à partir d’éléments versionnés et automatisés.
-
-### 4. Valider la reprise
-
-- vérifier l’état des services locaux
-- contrôler l’accès au bastion via le VPN Point-to-Site
-- tester les flux nécessaires entre les composants restaurés
-- confirmer que les règles de confinement peuvent rester actives pendant la phase de validation
-
-### 5. Réouvrir les communications
-
-Une fois la restauration validée :
-
-- désactiver progressivement les règles Kill Switch
-- réactiver les communications VPN inter-sites
-- surveiller les journaux et le comportement réseau après réouverture
-
 ## Conclusion
 
-Cette stratégie de Kill Switch permet une isolation rapide et contrôlée du site distant tout en garantissant la possibilité de reprise des services après remédiation.
-
-L’approche choisie privilégie :
-
-- la segmentation réseau
-- le confinement
-- la continuité opérationnelle
-- la simplicité d’exécution
-
-La stratégie de Kill Switch mise en place permet d’isoler rapidement les deux sites via les règles firewall OpenVPN tout en conservant la possibilité de rétablir les communications après remédiation.
+Cette stratégie de Kill Switch permet d’isoler rapidement le site distant, de limiter la propagation d’un incident et de conserver les moyens nécessaires à une reprise contrôlée après remédiation.
