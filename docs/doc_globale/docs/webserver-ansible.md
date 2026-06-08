@@ -18,6 +18,8 @@ intranet.local
 
 ## Topologie réseau
 
+Le schéma ci-dessous montre le chemin logique suivi pour atteindre le site web interne.
+
 ```text
 Poste utilisateur
         ↓
@@ -44,7 +46,6 @@ Les restrictions d’accès sont assurées par :
 - la segmentation VLAN
 - les règles firewall pfSense
 - l’accès SSH via le bastion
-- l’absence d’exposition HTTP directe sur le WAN
 
 Seules les machines internes autorisées peuvent accéder au serveur web.
 
@@ -54,10 +55,14 @@ Seules les machines internes autorisées peuvent accéder au serveur web.
 
 ## Serveur web
 
+Cette partie précise le service exposé sur la VM intranet.
+
 - Nginx
 - Port : `80/TCP`
 
 ## Webroot
+
+Le webroot correspond à l’emplacement des fichiers servis par Nginx.
 
 ```text
 /var/www/site_remote
@@ -99,14 +104,6 @@ Le contenu statique du site est déployé automatiquement via Ansible.
 
 ---
 
-# Accès au site web
-
-L’accès HTTP direct depuis des réseaux externes est volontairement bloqué.
-
-Le site peut être consulté de manière sécurisée grâce à un tunnel SSH via le bastion.
-
----
-
 # Accès via tunnel SSH
 
 ## Commande
@@ -131,7 +128,11 @@ http://localhost:8080/
 
 # Validation du fonctionnement
 
+Les étapes ci-dessous permettent de vérifier le service pas à pas, d’abord localement puis depuis le réseau interne.
+
 ## Vérifier l’état de Nginx
+
+Cette vérification confirme que le service est bien lancé sur la VM.
 
 ```bash
 systemctl status nginx
@@ -141,6 +142,8 @@ systemctl status nginx
 
 ## Vérifier la configuration Nginx
 
+Ce contrôle permet de détecter rapidement une erreur de configuration avant toute mise en service.
+
 ```bash
 sudo nginx -t
 ```
@@ -148,6 +151,8 @@ sudo nginx -t
 ---
 
 ## Tester le site localement depuis la VM
+
+Ce test valide la réponse du serveur depuis la machine elle-même.
 
 ```bash
 curl localhost
@@ -157,45 +162,11 @@ curl localhost
 
 ## Tester le site depuis le bastion
 
+Ce dernier test confirme que l’accès fonctionne depuis le réseau interne autorisé.
+
 ```bash
 curl http://intranet.local
 ```
-
----
-
-# Règles de sécurité appliquées
-
-## Isolation réseau
-
-- le VLAN INTRANET ne peut pas accéder au VLAN BASTION
-- le réseau OUTILS ne peut pas accéder au réseau INTRANET
-- le réseau MONITORING ne peut pas accéder au réseau INTRANET
-- les flux sont limités selon le principe du moindre privilège
-
-## Administration sécurisée
-
-- accès SSH imposé via le bastion
-- ports SSH personnalisés
-- accès WAN direct interdit
-
-## Publication du site
-
-Le site web est uniquement accessible :
-- depuis le bastion
-- via tunnel SSH
-- depuis les réseaux internes autorisés
-
-Le service n’est pas exposé publiquement.
-
----
-
-# Notes
-
-- L’accès HTTP externe est volontairement refusé
-- Le site est accessible uniquement via les chemins réseau internes autorisés
-- Le bastion est obligatoire pour l’administration et l’accès web
-- Le déploiement du site est géré via des rôles et playbooks Ansible
-- La résolution DNS `.local` est opérationnelle entre les deux sites
 
 ---
 
@@ -216,9 +187,6 @@ Les tests ont confirmé :
 - la disponibilité du service Nginx
 - la résolution DNS interne
 - l’accessibilité uniquement depuis le réseau autorisé
-
-L’accès au site n’est pas filtré au niveau applicatif Nginx mais directement au niveau réseau via la segmentation VLAN et les règles firewall pfSense. Cette approche limite l’exposition du service avant même d’atteindre le serveur web.
-
 
 ## Validation et tests du déploiement
 
