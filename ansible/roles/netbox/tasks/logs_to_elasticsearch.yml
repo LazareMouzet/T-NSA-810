@@ -1,0 +1,77 @@
+---
+- name: Configuration des logs NetBox vers Elasticsearch
+  when: netbox_logs_to_elasticsearch_enabled | bool
+  block:
+    - name: Installer dépendances Filebeat
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - gnupg
+        state: present
+        update_cache: true
+
+    - name: Vérifier la présence de la keyring Elastic
+      ansible.builtin.stat:
+        path: /usr/share/keyrings/elasticsearch-keyring.gpg
+      register: netbox_filebeat_elastic_keyring
+
+    - name: Télécharger la clé GPG Elastic
+      ansible.builtin.get_url:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        dest: /tmp/GPG-KEY-elasticsearch
+        mode: '0644'
+      when: not netbox_filebeat_elastic_keyring.stat.exists
+
+    - name: Convertir la clé Elastic au format keyring
+      ansible.builtin.command:
+        cmd: gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg /tmp/GPG-KEY-elasticsearch
+        creates: /usr/share/keyrings/elasticsearch-keyring.gpg
+      when: not netbox_filebeat_elastic_keyring.stat.exists
+
+    - name: Supprimer la clé GPG Elastic temporaire
+      ansible.builtin.file:
+        path: /tmp/GPG-KEY-elasticsearch
+        state: absent
+      when: not netbox_filebeat_elastic_keyring.stat.exists
+
+    - name: Ajouter le repository Elastic
+      ansible.builtin.apt_repository:
+        repo: >-
+          deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg]
+          https://artifacts.elastic.co/packages/8.x/apt stable main
+        filename: elastic-8.x
+        state: present
+
+    - name: Installer Filebeat
+      ansible.builtin.apt:
+        name: filebeat
+        state: present
+        update_cache: true
+
+    - name: Geler la version de Filebeat
+      ansible.builtin.dpkg_selections:
+        name: filebeat
+        selection: hold
+
+    - name: Créer le dossier Filebeat inputs.d
+      ansible.builtin.file:
+        path: /etc/filebeat/inputs.d
+        state: directory
+        owner: root
+        group: root
+        mode: '0750'
+
+    - name: Déployer l'input Filebeat pour NetBox
+      ansible.builtin.template:
+        src: filebeat-netbox-input.yml.j2
+        dest: /etc/filebeat/inputs.d/netbox.yml
+        owner: root
+        group: root
+        mode: '0640'
+      notify: Restart filebeat
+
+    - name: Activer et démarrer Filebeat
+      ansible.builtin.systemd:
+        name: filebeat
+        enabled: true
+        state: started

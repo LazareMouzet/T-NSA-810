@@ -61,3 +61,8 @@
   changed_when: false
   become: true
   become_user: netbox
+
+- name: Restart filebeat
+  ansible.builtin.service:
+    name: filebeat
+    state: restarted

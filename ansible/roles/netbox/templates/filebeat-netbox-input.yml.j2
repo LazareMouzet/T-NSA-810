@@ -1,0 +1,27 @@
+- type: filestream
+  id: netbox-services
+  enabled: true
+  paths:
+{% for path in netbox_filebeat_service_log_paths %}
+    - "{{ path }}"
+{% endfor %}
+  include_lines:
+{% for pattern in netbox_filebeat_service_include_lines %}
+    - "{{ pattern }}"
+{% endfor %}
+  fields:
+    service: netbox
+    log_source: service
+  fields_under_root: true
+
+- type: filestream
+  id: netbox-nginx
+  enabled: true
+  paths:
+{% for path in netbox_filebeat_nginx_log_paths %}
+    - "{{ path }}"
+{% endfor %}
+  fields:
+    service: netbox
+    log_source: nginx
+  fields_under_root: true

@@ -1,0 +1,28 @@
+# Vault policy: ansible-read
+path "{{ vault_kv_mount_path | default('secret') }}/data/infra/*" {
+  capabilities = ["read"]
+}
+
+path "{{ vault_kv_mount_path | default('secret') }}/metadata/infra/*" {
+  capabilities = ["read", "list"]
+}
+
+path "{{ vault_kv_mount_path | default('secret') }}/data/shared/*" {
+  capabilities = ["read"]
+}
+
+path "{{ vault_kv_mount_path | default('secret') }}/metadata/shared/*" {
+  capabilities = ["read", "list"]
+}
+
+path "auth/token/lookup-self" {
+  capabilities = ["read"]
+}
+
+path "sys/capabilities-self" {
+  capabilities = ["update"]
+}
+
+path "sys/health" {
+  capabilities = ["read"]
+}

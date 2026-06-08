@@ -17,3 +17,5 @@
   ansible.builtin.import_tasks: configure_nginx.yml
 - name: Import de la tâche service
   ansible.builtin.import_tasks: service.yml
+- name: Import de la tâche logs_to_elasticsearch
+  ansible.builtin.import_tasks: logs_to_elasticsearch.yml

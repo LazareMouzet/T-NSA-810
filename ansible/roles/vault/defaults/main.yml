@@ -1,0 +1,20 @@
+---
+vault_migrate_bootstrap_secrets: false
+vault_migration_overwrite_existing: false
+vault_migration_backup_enabled: true
+vault_migration_backup_cleanup_on_success: true
+
+vault_audit_to_elasticsearch_enabled: true
+vault_audit_device_name: "file"
+vault_audit_log_raw: false
+
+vault_addr: "{{ vault_runtime_addr | default('') }}"
+vault_kv_mount_path: "{{ vault_runtime_kv_mount_path | default('') }}"
+vault_audit_log_path: "{{ vault_runtime_audit_log_path | default('') }}"
+
+vault_filebeat_elasticsearch_scheme: "{{ vault_runtime_elasticsearch_scheme | default('') }}"
+vault_filebeat_elasticsearch_host: "{{ vault_runtime_elasticsearch_host | default('') }}"
+vault_filebeat_elasticsearch_port: "{{ vault_runtime_elasticsearch_port | default('') }}"
+vault_filebeat_elasticsearch_username: "{{ vault_runtime_elasticsearch_username | default('') }}"
+vault_filebeat_elasticsearch_password: "{{ vault_runtime_elasticsearch_password | default('') }}"
+vault_filebeat_index_prefix: "{{ vault_runtime_filebeat_index_prefix | default('vault-audit') }}"
