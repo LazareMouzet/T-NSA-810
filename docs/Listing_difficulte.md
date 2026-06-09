@@ -28,10 +28,10 @@ Ce document vise à répertorier et suivre l'ensemble des difficultés technique
 ## Difficultés Techniques
 
 ### [ID-001] - Perte de l'adresse du WAN sur la VM pfSense
-**Date de détection** : 26/01/2026  
-**Statut** : 🟢 Résolu  
-**État** : ✅ Résolu  
-**Module/Composant concerné** : Infrastructure réseau / Virtualisation  
+**Date de détection** : 26/01/2026
+**Statut** : 🟢 Résolu
+**État** : ✅ Résolu
+**Module/Composant concerné** : Infrastructure réseau / Virtualisation
 **Personnes impliquées** : @Salah, @Mathis
 
 #### Description
@@ -63,7 +63,7 @@ Symptômes observés :
 #### Solution finale
 - **Date de résolution** : 05/02/2026
 - **Description de la solution** : Appel à @Mathis (responsable de l'infrastructure fournie) qui nous a communiqué l'adresse IP du WAN. Reconfiguration manuelle de l'interface WAN de pfSense avec les paramètres corrects.
-- **Actions mises en place** : 
+- **Actions mises en place** :
   - Récupération de l'adresse WAN auprès de @Mathis
   - Réécriture de la configuration réseau de l'interface WAN
   - Vérification de la connectivité et retour à la normale
@@ -82,10 +82,10 @@ Symptômes observés :
 ---
 
 ### [ID-002] - Difficulté de connexion des VMs au réseau
-**Date de détection** : 15/02/2026  
-**Statut** : 🟠 Majeur  
-**État** : ✅ Résolu  
-**Module/Composant concerné** : Infrastructure réseau / Virtualisation  
+**Date de détection** : 15/02/2026
+**Statut** : 🟠 Majeur
+**État** : ✅ Résolu
+**Module/Composant concerné** : Infrastructure réseau / Virtualisation
 **Personnes impliquées** : @Salah
 
 #### Description
@@ -114,9 +114,9 @@ Symptômes observés :
 
 #### Solution finale
 - **Date de résolution** : inconnue
-- **Description de la solution** : 
-- **Actions mises en place** : 
-- **Coût (temps/ressources)** : 
+- **Description de la solution** :
+- **Actions mises en place** :
+- **Coût (temps/ressources)** :
 
 #### Leçons apprises
 - Nécessité de documenter clairement l'architecture réseau dès le départ
@@ -130,10 +130,10 @@ Symptômes observés :
 ---
 
 ### [ID-003] - Tunnel OpenVPN S2S - ping LAN impossible dans les deux sens
-**Date de détection** : 18/02/2026  
-**Statut** : 🟢 Résolu  
-**État** : ✅ Résolu  
-**Module/Composant concerné** : Réseau / OpenVPN / Firewall pfSense  
+**Date de détection** : 18/02/2026
+**Statut** : 🟢 Résolu
+**État** : ✅ Résolu
+**Module/Composant concerné** : Réseau / OpenVPN / Firewall pfSense
 **Personnes impliquées** : @Salah
 
 #### Description
@@ -180,10 +180,10 @@ Tentatives de diagnostique sur un large périmètre
 ---
 
 ### [ID-003.1] - NAT Outbound cassait le routage VPN
-**Date de détection** : 19/02/2026  
-**Statut** : 🟢 Résolu  
-**État** : ✅ Résolu  
-**Module/Composant concerné** : Réseau / NAT / OpenVPN  
+**Date de détection** : 19/02/2026
+**Statut** : 🟢 Résolu
+**État** : ✅ Résolu
+**Module/Composant concerné** : Réseau / NAT / OpenVPN
 **Personnes impliquées** : @Salah
 
 #### Description
@@ -209,7 +209,7 @@ Symptômes observés :
 - **Configuration** : NAT Outbound
 
 #### Tentatives de résolution
-1. **Date** : 19/02/2026 - Audit des règles NAT 
+1. **Date** : 19/02/2026 - Audit des règles NAT
 
 #### Solution finale
 - **Date de résolution** : 19/02/2026
@@ -230,10 +230,10 @@ Symptômes observés :
 ---
 
 ### [ID-003.2] - Virtual Address configurée sur 10.10.10.0 (adresse réseau invalide)
-**Date de détection** : 20/02/2026  
-**Statut** : 🟢 Résolu  
-**État** : ✅ Résolu  
-**Module/Composant concerné** : Réseau / OpenVPN  
+**Date de détection** : 20/02/2026
+**Statut** : 🟢 Résolu
+**État** : ✅ Résolu
+**Module/Composant concerné** : Réseau / OpenVPN
 **Personnes impliquées** : @Salah
 
 #### Description
@@ -279,10 +279,10 @@ Symptômes observés :
 ---
 
 ### [ID-003.3] - `iroute` non appliqué, trafic LAN refusé dans le tunnel
-**Date de détection** : 21/02/2026  
-**Statut** : 🟢 Résolu  
-**État** : ✅ Résolu  
-**Module/Composant concerné** : Réseau / OpenVPN / PKI  
+**Date de détection** : 21/02/2026
+**Statut** : 🟢 Résolu
+**État** : ✅ Résolu
+**Module/Composant concerné** : Réseau / OpenVPN / PKI
 **Personnes impliquées** : @Salah
 
 #### Description
@@ -315,7 +315,7 @@ Symptômes observés :
 - **Date de résolution** : 21/02/2026
 - **Description de la solution** : Modification du certificat client (CN `pfSense-remote`) puis mise à jour des règles `Client Specific Overrides`.
 - **Actions mises en place** :
-  - Mettre un nom spécifique au certificat dédié au client 
+  - Mettre un nom spécifique au certificat dédié au client
   - Réassocier correctement les overrides au bon CN
   - Tester les flux VPN et valider l'application des `iroute`
 - **Coût (temps/ressources)** : 4 jours[^vpn-cost-total]
@@ -331,14 +331,14 @@ Symptômes observés :
 ---
 
 ### [ID-003.4] - `ERROR: FreeBSD route add command failed - DCO (Data Channel Offload)`
-**Date de détection** : 22/02/2026  
-**Statut** : 🟢 Résolu  
-**État** : ✅ Résolu  
-**Module/Composant concerné** : Réseau / Routage / OpenVPN  
+**Date de détection** : 22/02/2026
+**Statut** : 🟢 Résolu
+**État** : ✅ Résolu
+**Module/Composant concerné** : Réseau / Routage / OpenVPN
 **Personnes impliquées** : @Salah
 
 #### Description
-Une erreur `ERROR: FreeBSD route add command failed: ` apparaissait lors de l'établissement du tunnel OpenVPN.
+Une erreur `ERROR: FreeBSD route add command failed:` apparaissait lors de l'établissement du tunnel OpenVPN.
 
 **Cause identifiée** : Route statique manuelle en doublon avec la route poussée automatiquement par OpenVPN.
 
@@ -383,9 +383,9 @@ Symptômes observés :
 ---
 
 ### [ID-004] - `ERROR I/O - VM1001`
-**Date de détection** : Inconnue  
-**Statut** : 🟢 Résolu  
-**État** : ✅ Résolu  
+**Date de détection** : Inconnue
+**Statut** : 🟢 Résolu
+**État** : ✅ Résolu
 **Module/Composant concerné** : Proxmox
 **Personnes impliquées** : @Salah
 
