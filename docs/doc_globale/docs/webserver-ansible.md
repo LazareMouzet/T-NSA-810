@@ -26,7 +26,7 @@ Poste utilisateur
 VPN / Accès interne
         ↓
 Bastion (VLAN 20)
-192.168.20.X
+192.168.20.10
         ↓
 Routage pfSense
 192.168.20.1 ↔ 192.168.30.1
@@ -148,6 +148,14 @@ Ce contrôle permet de détecter rapidement une erreur de configuration avant to
 sudo nginx -t
 ```
 
+Si besoin, une consultation de l’état du service et les journaux associés est possible:
+
+```bash
+systemctl status nginx
+sudo journalctl -u nginx -f
+sudo journalctl -u nginx -n 50
+```
+
 ---
 
 ## Tester le site localement depuis la VM
@@ -155,7 +163,7 @@ sudo nginx -t
 Ce test valide la réponse du serveur depuis la machine elle-même.
 
 ```bash
-curl localhost
+curl -I localhost
 ```
 
 ---
@@ -165,7 +173,7 @@ curl localhost
 Ce dernier test confirme que l’accès fonctionne depuis le réseau interne autorisé.
 
 ```bash
-curl http://intranet.local
+curl -I http://intranet.local
 ```
 
 ---

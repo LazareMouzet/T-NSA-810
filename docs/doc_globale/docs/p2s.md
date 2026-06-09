@@ -234,7 +234,7 @@ Aucune perte de paquets ne doit être observée.
 
 Tester la résolution du domaine interne :
 
-```powershell
+```linux
 nslookup intranet.local
 ```
 
@@ -263,6 +263,12 @@ Depuis PowerShell :
 Invoke-WebRequest -Uri http://intranet.local -Method Head
 ```
 
+Depuis Linux :
+
+```bash
+curl -I http://intranet.local
+```
+
 Résultat attendu :
 
 ```text
@@ -278,8 +284,8 @@ Connexion attendue avec le profil `p2s_remote.ovpn`.
 
 Vérifications post-connexion :
 
-- vérifier l’adresse VPN avec `ipconfig`
-- vérifier l’accès au pfSense Remote avec `ping 192.168.20.1`
+- vérifier l’adresse VPN avec `ipconfig` depuis powershell ou `ip addr` depuis linux
+- vérifier l’accès au pfSense Remote avec `ping  192.168.10.10`
 - vérifier l’accès au bastion avec `ping 192.168.20.10`
 
 Résultats attendus en cas de blocage :
@@ -305,7 +311,7 @@ Tests de blocage attendus :
 - `ping 192.168.100.100`
 - `ping 192.168.200.10`
 - `ping 192.168.130.10`
-- `curl http://outils.local`
+- `curl -I http://outils.local`
 
 Les requêtes ci-dessus doivent échouer par timeout ou refus.
 
