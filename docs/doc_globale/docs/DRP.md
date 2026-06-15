@@ -104,7 +104,7 @@ La stratégie de reprise repose sur trois piliers complémentaires :
 
 En cas de reconstruction complète, respecter impérativement cet ordre :
 
-```
+```text
 1. pfSense Remote        → point d'entrée de l'infrastructure
 2. pfSense Datacenter    → accès au datacenter
 3. VPN Site-to-Site      → interconnexion inter-sites
@@ -587,7 +587,7 @@ Les tests de reprise permettent de valider que les procédures du PRA fonctionne
 
 Après chaque test de reprise, valider le bon fonctionnement de l'infrastructure via la checklist suivante :
 
-```
+```text
 □ ansible all -m ping → 4/4 SUCCESS
 □ Vault status → Initialized: true, Sealed: false
 □ NetBox accessible via tunnel SSH

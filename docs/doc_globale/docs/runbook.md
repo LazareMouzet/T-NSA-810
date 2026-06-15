@@ -42,7 +42,7 @@ L'infrastructure CIA est une architecture hybride multi-sites composée de deux 
 
 #### Schéma général
 
-```
+```text
 Internet
    │
    ├── pfSense Remote (5.196.51.230)
@@ -109,7 +109,7 @@ ssh-add ~/.ssh/id_ed25519
 
 ### 2.3 Configuration SSH (`~/.ssh/config`)
 
-```
+```sshconfig
 Host bastion
     HostName 5.196.51.230
     User epicloud111
@@ -209,7 +209,7 @@ ansible all -m ping
 
 Résultat attendu :
 
-```
+```text
 bastion     | SUCCESS => {"ping": "pong"}
 outils      | SUCCESS => {"ping": "pong"}
 monitoring  | SUCCESS => {"ping": "pong"}
@@ -436,7 +436,6 @@ df -h /
 ### 4.1 Mise à jour des packages
 
 > ⚠️ Ne jamais utiliser `apt dist-upgrade`. Utiliser uniquement `apt upgrade` (équivalent `upgrade: safe` dans Ansible).
-
 > ⚠️ Elasticsearch, Kibana et Filebeat sont gelés (`apt-mark hold`) et ne doivent pas être mis à jour sans validation préalable.
 
 #### Via Ansible (recommandé)
@@ -533,11 +532,11 @@ du -sh /var/log/elasticsearch/
 
 | Ressource | URL |
 |---|---|
-| Documentation Ansible | https://docs.ansible.com |
-| Documentation Vault | https://developer.hashicorp.com/vault/docs |
-| Documentation NetBox | https://docs.netbox.dev |
-| Documentation Elasticsearch | https://www.elastic.co/guide |
-| Documentation pfSense | https://docs.netgate.com/pfsense |
+| Documentation Ansible | [docs.ansible.com](https://docs.ansible.com) |
+| Documentation Vault | [developer.hashicorp.com/vault/docs](https://developer.hashicorp.com/vault/docs) |
+| Documentation NetBox | [docs.netbox.dev](https://docs.netbox.dev) |
+| Documentation Elasticsearch | [elastic.co/guide](https://www.elastic.co/guide) |
+| Documentation pfSense | [docs.netgate.com/pfsense](https://docs.netgate.com/pfsense) |
 
 ### 5.3 Accès aux interfaces
 

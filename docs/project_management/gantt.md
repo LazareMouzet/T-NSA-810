@@ -1,3 +1,5 @@
+# Gantt du projet
+
 ```mermaid
 
 %%{init: {'gantt': {'leftPadding': 150}}}%%
@@ -235,4 +237,3 @@ gantt
 
 
 ```
-

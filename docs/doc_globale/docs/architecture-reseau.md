@@ -74,7 +74,7 @@ L’utilisation d’une plage dédiée permet :
 | Monitoring | Centralisation des logs | 192.168.130.10 |
 | Outils | Visualisation des logs | 192.168.200.10 |
 
-### Principes de conception
+## Principes de conception
 
 Le plan d'adressage respecte les principes suivants :
 
@@ -90,7 +90,7 @@ Le plan d'adressage respecte les principes suivants :
 -   Possibilité d'évolution sans remise en cause de l'architecture
     existante
 
-### Évolutivité et extensibilité de l'architecture
+## Évolutivité et extensibilité de l'architecture
 
 L'architecture réseau a été conçue avec un objectif d'évolutivité afin
 de permettre l'ajout futur de nouveaux composants d'infrastructure sans

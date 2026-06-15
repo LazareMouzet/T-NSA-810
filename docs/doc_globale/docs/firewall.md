@@ -98,7 +98,7 @@ Ces règles permettent de contrôler les communications entre les différents so
 
 ## Justification des règles critiques
 
-**Bastion → Toutes les VMs (SSH)**
+### Bastion → Toutes les VMs (SSH)
 
 Le bastion constitue le point d’entrée unique pour l’administration de l’infrastructure. Il est le seul hôte autorisé à initier des connexions SSH vers l’ensemble des machines virtuelles internes.
 
@@ -106,7 +106,7 @@ Cette règle est volontairement étendue afin de garantir la capacité d’admin
 
 Elle s’inscrit dans le principe de réduction de la surface d’attaque, en évitant toute connexion SSH directe depuis d’autres réseaux.
 
-**VLANs → Elasticsearch (port 9200)**
+### VLANs → Elasticsearch (port 9200)
 
 Les agents Filebeat déployés sur chaque machine envoient les logs vers Elasticsearch via le port TCP 9200.
 
@@ -118,7 +118,7 @@ Cette segmentation permet :
 - de centraliser les logs dans un environnement dédié
 - limiter les communications entre les différents sous-réseaux afin de réduire les possibilités de mouvement latéral en cas de compromission d’une machine.
 
-**Règles NAT Outbound**
+### Règles NAT Outbound
 
 Chaque VLAN dispose d’une règle de NAT Outbound permettant aux machines internes d’accéder à Internet via l’adresse WAN de pfSense.
 

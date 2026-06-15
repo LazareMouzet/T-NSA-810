@@ -80,6 +80,7 @@
       loop_control:
         label: "{{ item.name }}"
       no_log: true
+      changed_when: true
       when:
         - not ansible_check_mode
         - item.name not in vault_existing_policies

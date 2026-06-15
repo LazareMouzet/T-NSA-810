@@ -1,0 +1,7 @@
+---
+webserver_package: nginx
+webserver_service: nginx
+webserver_site_name: site_remote
+webserver_site_path: /var/www/site_remote
+webserver_listen_port: 80
+webserver_server_name: intranet.local
