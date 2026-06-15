@@ -1,0 +1,6 @@
+---
+collections:
+  - name: ansible.posix
+  - name: community.postgresql
+  - name: netbox.netbox
+  - name: community.general

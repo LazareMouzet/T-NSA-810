@@ -1,0 +1,87 @@
+---
+- name: Gestion des policies Vault
+  vars:
+    vault_default_policies:
+      - name: admin
+        template: policies/admin.hcl.j2
+      - name: ansible-read
+        template: policies/ansible-read.hcl.j2
+      - name: netbox-read
+        template: policies/netbox-read.hcl.j2
+    vault_policy_definitions: "{{ vault_policies | default(vault_default_policies) }}"
+    vault_policy_management_token: "{{ vault_policy_token | default(vault_root_token | default('')) }}"
+    vault_existing_policies: []
+    vault_policy_template_changed_map: {}
+  block:
+    - name: Vérifier les variables requises pour la gestion des policies Vault
+      ansible.builtin.assert:
+        that:
+          - vault_policy_management_token | length > 0
+          - vault_addr | length > 0
+        fail_msg: >-
+          Définissez vault_addr et vault_policy_token (ou vault_root_token)
+          dans inventory/group_vars/all/vault.yml avant d'appliquer les policies.
+      no_log: true
+
+    - name: Création du dossier des policies Vault
+      ansible.builtin.file:
+        path: /etc/vault.d/policies
+        state: directory
+        owner: vault
+        group: vault
+        mode: '0750'
+
+    - name: Récupérer la liste des policies Vault existantes
+      ansible.builtin.command:
+        cmd: vault policy list -format=json
+      environment:
+        VAULT_ADDR: "{{ vault_addr }}"
+        VAULT_TOKEN: "{{ vault_policy_management_token }}"
+      register: vault_policy_list_raw
+      changed_when: false
+      no_log: true
+      when: not ansible_check_mode
+
+    - name: Construire la liste des policies Vault existantes
+      ansible.builtin.set_fact:
+        vault_existing_policies: "{{ vault_policy_list_raw.stdout | default('[]') | from_json }}"
+      when: not ansible_check_mode
+      no_log: true
+
+    - name: Déployer les templates des policies Vault
+      ansible.builtin.template:
+        src: "{{ item.template }}"
+        dest: "/etc/vault.d/policies/{{ item.name }}.hcl"
+        owner: vault
+        group: vault
+        mode: '0640'
+      loop: "{{ vault_policy_definitions }}"
+      loop_control:
+        label: "{{ item.name }}"
+      register: vault_policy_templates
+
+    - name: Construire la map des templates de policies modifiés
+      ansible.builtin.set_fact:
+        vault_policy_template_changed_map: >-
+          {{
+            dict(
+              vault_policy_templates.results | map(attribute='item.name')
+              | zip(vault_policy_templates.results | map(attribute='changed'))
+            )
+          }}
+
+    - name: Appliquer les policies Vault
+      ansible.builtin.command:
+        cmd: "vault policy write {{ item.name }} /etc/vault.d/policies/{{ item.name }}.hcl"
+      environment:
+        VAULT_ADDR: "{{ vault_addr }}"
+        VAULT_TOKEN: "{{ vault_policy_management_token }}"
+      loop: "{{ vault_policy_definitions }}"
+      loop_control:
+        label: "{{ item.name }}"
+      no_log: true
+      changed_when: true
+      when:
+        - not ansible_check_mode
+        - item.name not in vault_existing_policies
+          or (vault_policy_template_changed_map[item.name] | default(false))

@@ -1,10 +1,16 @@
 # Gantt du projet CIA
 
 ```mermaid
+
 %%{init: {'gantt': {'leftPadding': 150}}}%%
+
 gantt
+
   title NSA 810
+
   dateFormat YYYY-MM-DD
+
+
 
   section Milestones
   Follow-up 1 (Scoping) : milestone, m406, 2026-03-02, 0d
@@ -102,8 +108,11 @@ gantt
   TASK 6.4.4 - Kill Switch : 2026-05-04, 2026-06-15
   STORY 4.4 - Install and Configure internal website (Site Remote) : 2026-05-05, 2026-06-15
   TASK 5.4.7 - Ansible  Create basic Vault policies : 2026-05-05, 2026-06-01
+
   TASK 5.4.8 - Migrate secrets to Vault : 2026-05-05, 2026-06-01
+
   TASK 5.4.9 - Logs from Vault to Elasticsearch : 2026-05-05, 2026-06-01
+
   TASK 5.4.10 - NetBox logs to Elasticsearch : 2026-05-05, 2026-06-01
   TASK 5.4.11 - Host the website : 2026-05-05, 2026-05-23
   TASK 5.4.12 - Create webserver role : 2026-05-05, 2026-05-23

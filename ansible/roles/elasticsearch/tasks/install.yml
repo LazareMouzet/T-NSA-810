@@ -1,0 +1,67 @@
+---
+- name: Vérifier si Elasticsearch est installé
+  ansible.builtin.stat:
+    path: "/etc/elasticsearch/elasticsearch.yml"
+  register: elasticsearch_rep
+
+- name: Installer apt-transport-https
+  ansible.builtin.apt:
+    name: apt-transport-https
+    state: present
+
+- name: Vérifier si la clé GPG Elasticsearch existe
+  ansible.builtin.stat:
+    path: /usr/share/keyrings/elasticsearch-keyring.gpg
+  register: elasticsearch_key_gpg_elastic
+
+- name: Télécharger la clé GPG Elasticsearch
+  ansible.builtin.get_url:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    dest: /tmp/GPG-KEY-elasticsearch
+    mode: '0644'
+  when: not elasticsearch_key_gpg_elastic.stat.exists
+
+- name: Convertir la clé GPG au format keyring
+  ansible.builtin.command:
+    cmd: gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg /tmp/GPG-KEY-elasticsearch
+    creates: /usr/share/keyrings/elasticsearch-keyring.gpg
+  when: not elasticsearch_key_gpg_elastic.stat.exists
+
+- name: Ajout du repository Elastic
+  ansible.builtin.apt_repository:
+    repo: >
+      "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg]
+      https://artifacts.elastic.co/packages/8.x/apt stable main"
+    filename: elastic-8.x
+    state: present
+
+- name: Refresh cache après ajout repo
+  ansible.builtin.apt:
+    update_cache: true
+  when: not elasticsearch_rep.stat.exists
+
+- name: Installation de Elasticsearch
+  ansible.builtin.apt:
+    name: elasticsearch={{ elastic_version }}
+    state: present
+    update_cache: true
+
+- name: Installation de Kibana
+  ansible.builtin.apt:
+    name: kibana={{ elastic_version }}
+    state: present
+
+- name: Installation de Filebeat
+  ansible.builtin.apt:
+    name: filebeat
+    state: present
+
+- name: Geler les versions Elastic
+  ansible.builtin.dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  loop:
+    - elasticsearch
+    - kibana
+    - filebeat
+    - dpkg_selections

@@ -1,0 +1,6 @@
+.env
+.vscode
+venv
+.vault-pass
+.vscode
+ssh-path.yml

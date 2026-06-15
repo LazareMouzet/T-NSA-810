@@ -1,0 +1,7 @@
+---
+- name: Deploiement de Netbox
+  hosts: outils
+  become: true
+
+  roles:
+    - netbox

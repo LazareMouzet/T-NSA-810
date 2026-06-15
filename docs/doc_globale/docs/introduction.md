@@ -50,7 +50,7 @@ mais non exposables :
 -   DNS Forwarder : résolution des noms internes (services, hôtes ...)
 
 Ces services ne sont jamais exposés directement : ils sont accessibles
-uniquement via des mécanismes d'accès contrôlés et isolés dans des LAN
+uniquement via des mécanismes d'accès contrôlés et isolés dans des VLAN
 dédiés. Le site on-premise sert ainsi de source de vérité pour
 l'ensemble de l'infrastructure.
 
@@ -67,8 +67,7 @@ Il héberge notamment :
 -   Les composants nécessaires à l'accès VPN et à la gestion des flux
     inter-sites
 
--   Staging / Zone de détonation (manipuler du contenu non fiable doit
-    être sacrifiable)
+-   Une application web disponible uniquement dans le réseau intranet de l'infrastructure
 
 Contrairement au site on-premise, il ne contient aucune donnée critique
 métier, ce qui limite les risques en cas de compromission.
@@ -106,7 +105,7 @@ systématique par firewall pour empêcher tout trafic non autorisé.
 L'architecture s'appuie sur plusieurs principes de sécurité
 fondamentaux. Elle adopte une approche Zero Trust pour le réseau, où
 aucun flux n'est implicite et où chaque connexion doit être vérifiée. Le
-cloisonnement est assuré par LAN et par service, limitant les
+cloisonnement est assuré par VLAN et par service, limitant les
 interactions au strict nécessaire. Le principe du moindre privilège
 guide l'attribution des droits, tandis que les services sensibles ne
 sont jamais exposés directement. De plus, il n'y a pas de dépendance

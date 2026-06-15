@@ -1,0 +1,177 @@
+---
+- name: Configuration des logs Vault vers Elasticsearch
+  vars:
+    vault_audit_management_token: >-
+      {{
+        vault_audit_token
+        | default(vault_migration_token
+        | default(vault_policy_token
+        | default(vault_root_token | default(''))))
+      }}
+    vault_audit_device_key: "{{ vault_audit_device_name ~ '/' }}"
+  when: vault_audit_to_elasticsearch_enabled | bool
+  block:
+    - name: Vérifier les variables requises pour les logs Vault
+      ansible.builtin.assert:
+        that:
+          - vault_addr | length > 0
+          - vault_audit_log_path | length > 0
+          - vault_filebeat_elasticsearch_scheme | length > 0
+          - vault_filebeat_elasticsearch_host | length > 0
+          - vault_filebeat_elasticsearch_port | string | length > 0
+          - vault_filebeat_elasticsearch_username | length > 0
+          - vault_filebeat_elasticsearch_password | length > 0
+        fail_msg: >-
+          Définissez les variables runtime Vault/Elasticsearch dans
+          inventory/group_vars/all/vault.yml avant de configurer les logs Vault.
+      no_log: true
+    - name: Vérifier la présence d'un token de gestion Vault
+      ansible.builtin.assert:
+        that:
+          - vault_audit_management_token | length > 0
+        fail_msg: >-
+          Définissez vault_audit_token (ou vault_migration_token /
+          vault_policy_token / vault_root_token) dans
+          inventory/group_vars/all/vault.yml avant de configurer les logs Vault.
+      no_log: true
+
+    - name: Créer le dossier de logs Vault
+      ansible.builtin.file:
+        path: "{{ vault_audit_log_path | dirname }}"
+        state: directory
+        owner: vault
+        group: vault
+        mode: '0750'
+
+    - name: Créer le fichier de log d'audit Vault
+      ansible.builtin.file:
+        path: "{{ vault_audit_log_path }}"
+        state: touch
+        owner: vault
+        group: vault
+        mode: '0640'
+        access_time: preserve
+        modification_time: preserve
+
+    - name: Récupérer les devices d'audit Vault
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/sys/audit"
+        method: GET
+        headers:
+          X-Vault-Token: "{{ vault_audit_management_token }}"
+        return_content: true
+        status_code:
+          - 200
+          - 403
+      register: vault_audit_devices
+      no_log: true
+
+    - name: Vérifier les droits du token de gestion Vault sur sys/audit
+      ansible.builtin.assert:
+        that:
+          - vault_audit_devices.status == 200
+        fail_msg: >-
+          Le token utilisé pour la gestion des logs Vault n'a pas les droits
+          requis sur /v1/sys/audit (status={{ vault_audit_devices.status }}).
+      no_log: true
+
+    - name: Activer l'audit device fichier pour Vault
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/sys/audit/{{ vault_audit_device_name }}"
+        method: POST
+        headers:
+          X-Vault-Token: "{{ vault_audit_management_token }}"
+        body_format: json
+        body:
+          type: file
+          options:
+            file_path: "{{ vault_audit_log_path }}"
+            log_raw: "{{ vault_audit_log_raw | ternary('true', 'false') }}"
+        status_code:
+          - 200
+          - 204
+          - 403
+      when:
+        - vault_audit_device_key not in vault_audit_devices.json
+        - not ansible_check_mode
+      no_log: true
+      register: vault_enable_audit_device
+
+    - name: Vérifier les droits du token pour activer le device d'audit
+      ansible.builtin.assert:
+        that:
+          - vault_enable_audit_device.status != 403
+        fail_msg: >-
+          Le token utilisé n'a pas les droits pour activer le device
+          d'audit Vault '{{ vault_audit_device_name }}'.
+      when:
+        - vault_audit_device_key not in vault_audit_devices.json
+        - not ansible_check_mode
+      no_log: true
+
+    - name: Installer dépendances Filebeat
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - gnupg
+        state: present
+        update_cache: true
+
+    - name: Vérifier la présence de la keyring Elastic
+      ansible.builtin.stat:
+        path: /usr/share/keyrings/elasticsearch-keyring.gpg
+      register: vault_filebeat_elastic_keyring
+
+    - name: Télécharger la clé GPG Elastic
+      ansible.builtin.get_url:
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        dest: /tmp/GPG-KEY-elasticsearch
+        mode: '0644'
+      when: not vault_filebeat_elastic_keyring.stat.exists
+
+    - name: Convertir la clé Elastic au format keyring
+      ansible.builtin.command:
+        cmd: gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg /tmp/GPG-KEY-elasticsearch
+        creates: /usr/share/keyrings/elasticsearch-keyring.gpg
+      when: not vault_filebeat_elastic_keyring.stat.exists
+
+    - name: Supprimer la clé GPG Elastic temporaire
+      ansible.builtin.file:
+        path: /tmp/GPG-KEY-elasticsearch
+        state: absent
+      when: not vault_filebeat_elastic_keyring.stat.exists
+
+    - name: Ajouter le repository Elastic
+      ansible.builtin.apt_repository:
+        repo: >-
+          deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg]
+          https://artifacts.elastic.co/packages/8.x/apt stable main
+        filename: elastic-8.x
+        state: present
+
+    - name: Installer Filebeat
+      ansible.builtin.apt:
+        name: filebeat
+        state: present
+        update_cache: true
+
+    - name: Geler la version de Filebeat
+      ansible.builtin.dpkg_selections:
+        name: filebeat
+        selection: hold
+
+    - name: Déployer la configuration Filebeat Vault
+      ansible.builtin.template:
+        src: filebeat-vault.yml.j2
+        dest: /etc/filebeat/filebeat.yml
+        owner: root
+        group: root
+        mode: '0600'
+      notify: Restart filebeat
+      no_log: true
+
+    - name: Activer et démarrer Filebeat
+      ansible.builtin.systemd:
+        name: filebeat
+        enabled: true
+        state: started
