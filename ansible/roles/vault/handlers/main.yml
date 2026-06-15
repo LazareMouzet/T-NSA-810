@@ -1,0 +1,10 @@
+---
+- name: Restart vault
+  ansible.builtin.service:
+    name: vault
+    state: restarted
+
+- name: Restart filebeat
+  ansible.builtin.service:
+    name: filebeat
+    state: restarted

@@ -1,3 +1,4 @@
+---
 site_name: Documentation Projet CIA
 site_url: https://lazaremouzet.github.io/T-NSA-810/
 theme:
@@ -15,6 +16,10 @@ nav:
   - Règles firewall et flux autorisés: firewall.md
   - Supervision, logs et traçabilité: supervision.md
   - Déploiement et exploitation: deploiement.md
+  - Automatisation avec Ansible: ansible.md
+  - Déploiement du site web interne: webserver-ansible.md
+  - Procédure de Kill Switch: kill-switch.md
+  - Mise en place du VPN Point-to-Site: p2s.md
   - Tests de validation et scénario: tests.md
   - Limites, risques et amélioration: limites.md
   - Conclusion: conclusion.md
