@@ -53,7 +53,8 @@ Les playbooks sont organisés par service et peuvent être rejoués à tout mome
 │   |── netbox.yml             ← Playbook du rôle netbox
 │   ├── proxmox.yml            ← Playbook du rôle proxmox
 │   ├── vault.yml              ← Playbook du rôle vault
-│   └── vm_ip_to_netbox.yml    ← Playbook du rôle vm_ip_to_netbox.yml
+|   |── vm_ip_to_netbox.yml    ← Playbook du rôle vm_ip_to_netbox.yml
+│   └── webserver.yml          ← Playbook du rôle webserver.yml
 │
 ├── roles/
 │   └── [nom-du-role]/
@@ -85,6 +86,9 @@ ansible-playbook playbooks/elastic.yml
 
 # 4. Déploiement de NetBox
 ansible-playbook playbooks/netbox.yml
+
+# 5. Déploiement du site web interne
+ansible-playbook playbooks/webserver.yml
 ```
 
 ⚠️ Il est recommandé d’exécuter systématiquement les playbooks avec les options `--check` et `--diff` afin de valider les modifications avant application.
