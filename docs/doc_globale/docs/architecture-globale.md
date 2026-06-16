@@ -74,3 +74,5 @@ L’utilisation d’un VPN Site-to-Site (S2S) présente plusieurs avantages :
 
 
 ## Schéma global (HLD)
+
+![LLD](../../../assets/diagram-HLD.png)
